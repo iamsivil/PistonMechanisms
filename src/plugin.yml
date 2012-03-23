@@ -1,0 +1,4 @@
+name: PistonMechanisms
+version: 0.1
+author: IGP
+main: com.github.igp.PistonMechanisms.PMMain
