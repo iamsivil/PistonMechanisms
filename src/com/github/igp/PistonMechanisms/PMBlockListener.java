@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PMBlockListener implements Listener {
@@ -26,35 +27,67 @@ public class PMBlockListener implements Listener {
 	public void onBlockPhysics(final BlockPhysicsEvent event) {
 		final Block b = event.getBlock();
 		if ((b.getType() == Material.PISTON_BASE) || (b.getType() == Material.PISTON_STICKY_BASE)) {
-			if (b.isBlockPowered() || b.isBlockIndirectlyPowered()) {
-				final BlockFace face = getPistonDirection(b.getData());
-				final List<Block> blocks = new ArrayList<Block>(12);
-
-				for (int i = 1; i < 13; i++) {
-					final Block n = b.getRelative(face, i);
-					if (!isNotAcceptedType(n.getType()))
-						blocks.add(n);
-					else
-						break;
-				}
-
-				for (int i = (blocks.size() - 1); i > -1; i--) {
-					final Block n = blocks.get(i);
-					final Block next = n.getRelative(face);
-					final Block nextdown = next.getRelative(BlockFace.DOWN);
-
-					if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() == Material.STATIONARY_LAVA))
-						mechs.Bake(n);
-					else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() == Material.STATIONARY_WATER))
-						mechs.Wash(n);
-
-					if (isValidContainer(next))
-						mechs.Store(n, next);
-					else if (next.getType() == Material.OBSIDIAN)
-						mechs.Crush(n);
+			final BlockFace face = getPistonDirection(b.getData());
+			
+			if (b.isBlockPowered() || b.isBlockIndirectlyPowered()) {	
+				if (isBlockPowered(b, face))				{
+					final List<Block> blocks = new ArrayList<Block>(12);
+					
+					for (int i = 1; i < 13; i++) {
+						final Block n = b.getRelative(face, i);
+						if (!isNotAcceptedType(n.getType()))
+							blocks.add(n);
+						else
+							break;
+					}
+	
+					for (int i = (blocks.size() - 1); i > -1; i--) {
+						final Block n = blocks.get(i);
+						final Block next = n.getRelative(face);
+						final Block nextdown = next.getRelative(BlockFace.DOWN);
+	
+						if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() == Material.STATIONARY_LAVA))
+							mechs.Bake(n);
+						else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() == Material.STATIONARY_WATER))
+							mechs.Wash(n);
+	
+						if (isValidContainer(next))
+							mechs.Store(n, next);
+						else if (next.getType() == Material.OBSIDIAN)
+							mechs.Crush(n);
+					}
 				}
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
+		if (event.isSticky())
+		{
+			final Block b = event.getBlock();
+			final BlockFace face = getPistonDirection(b.getData());
+			final Block n = b.getRelative(face, 2);
+			
+			if (isValidContainer(n))
+				mechs.Retreive(n, b.getRelative(face));
+		}
+	}
+	
+	public Boolean isBlockPowered(Block b, BlockFace ignore)
+	{
+		for (BlockFace face : Faces.getValidFaces())
+		{						
+			if (face == ignore)
+				continue;
+			
+			if (b.getRelative(face).getBlockPower(face) == 0)
+				continue;
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 	public BlockFace getPistonDirection(byte data) {
@@ -85,31 +118,6 @@ public class PMBlockListener implements Listener {
 		}
 		return false;
 	}
-
-	/*
-	 * @EventHandler(priority = EventPriority.NORMAL) public void
-	 * onBlockPistonExtend(BlockPistonExtendEvent event) { for (Block b :
-	 * event.getBlocks()) { Block next = b.getRelative(event.getDirection());
-	 * Block nextdown = next.getRelative(BlockFace.DOWN); Block nextnext =
-	 * next.getRelative(event.getDirection());
-	 * 
-	 * if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() ==
-	 * Material.STATIONARY_LAVA)) { mechs.Bake(b); event.setCancelled(true); }
-	 * else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() ==
-	 * Material.STATIONARY_WATER)) mechs.Wash(b);
-	 * 
-	 * if (isValidContainer(nextnext)) { mechs.Store(b, nextnext); } else if
-	 * (nextnext.getType() == Material.OBSIDIAN) { mechs.Crush(b,
-	 * event.getDirection()); }
-	 * 
-	 * } }
-	 * 
-	 * @EventHandler(priority = EventPriority.NORMAL) public void
-	 * onBlockPistonRetract(BlockPistonRetractEvent event) {
-	 * 
-	 * 
-	 * }
-	 */
 
 	private boolean isValidContainer(final Block b) {
 		if ((b.getType() == Material.CHEST) || (b.getType() == Material.DISPENSER) || (b.getType() == Material.FURNACE) || (b.getType() == Material.BURNING_FURNACE))
