@@ -15,39 +15,48 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class PMMechanisms {
+public class PMMechanisms
+{
 	JavaPlugin plugin;
 
-	public PMMechanisms(final JavaPlugin plugin) {
+	public PMMechanisms(final JavaPlugin plugin)
+	{
 		this.plugin = plugin;
 	}
 
-	public void bake(final Block b) {
-		
-	}
-
-	public void wash(final Block b) {
+	public void bake(final Block b)
+	{
 
 	}
 
-	public void crush(final Block b) {
+	public void wash(final Block b)
+	{
+
+	}
+
+	public void crush(final Block b)
+	{
 		b.breakNaturally();
 	}
 
-	public void store(final Block b, final Block container) {
-		final Inventory inv = ((InventoryHolder)container.getState()).getInventory();
-		
+	public void store(final Block b, final Block container)
+	{
+		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
+
 		if (b.getType() != Material.AIR)
 		{
 			final ItemStack stack = new ItemStack(b.getType(), 1, (short) 0, b.getData());
-			
-			if ((container.getType() == Material.FURNACE) || (container.getType() == Material.BURNING_FURNACE)) {
+
+			if ((container.getType() == Material.FURNACE) || (container.getType() == Material.BURNING_FURNACE))
+			{
 				final ItemStack burnstack = inv.getItem(0);
-				if (burnstack == null) {
+				if (burnstack == null)
+				{
 					inv.setItem(0, stack);
 					b.setType(Material.AIR);
 				}
-				else if ((burnstack.getType() == stack.getType()) && (burnstack.getData().getData() == stack.getData().getData()) && (burnstack.getAmount() < (65 - stack.getAmount()))) {
+				else if ((burnstack.getType() == stack.getType()) && (burnstack.getData().getData() == stack.getData().getData()) && (burnstack.getAmount() < (65 - stack.getAmount())))
+				{
 					burnstack.setAmount(burnstack.getAmount() + stack.getAmount());
 					b.setType(Material.AIR);
 				}
@@ -66,7 +75,7 @@ public class PMMechanisms {
 				locations.add(new Location(e.getWorld(), loc.getX(), loc.getY(), loc.getZ(), loc.getPitch(), loc.getYaw()));
 				entities.add(e);
 			}
-			
+
 			if (locations.size() == entities.size())
 			{
 				for (int i = 0; i < locations.size(); i++)
@@ -77,7 +86,7 @@ public class PMMechanisms {
 						{
 							final ItemStack stack = ((Item) entities.get(i)).getItemStack();
 							final HashMap<Integer, ItemStack> overflow = inv.addItem(stack);
-							
+
 							if (overflow.isEmpty())
 								entities.get(i).remove();
 							else
@@ -93,12 +102,13 @@ public class PMMechanisms {
 			}
 		}
 	}
-	
-	public void retrieve(final Block container, final Block b)	{
-		final Inventory inv = ((InventoryHolder)container.getState()).getInventory();
+
+	public void retrieve(final Block container, final Block b)
+	{
+		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
 		ItemStack stack = null;
 		int loc;
-		
+
 		if ((container.getType() == Material.FURNACE) || (container.getType() == Material.BURNING_FURNACE))
 		{
 			loc = 2;
@@ -116,7 +126,7 @@ public class PMMechanisms {
 				}
 			}
 		}
-		
+
 		if (stack != null)
 		{
 			if (Materials.isValidBlock(stack.getType()))
@@ -131,11 +141,11 @@ public class PMMechanisms {
 				final ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			}
-				
+
 			if (stack.getAmount() > 1)
 				stack.setAmount(stack.getAmount() - 1);
 			else
-				inv.clear(loc);	
+				inv.clear(loc);
 		}
 	}
 }

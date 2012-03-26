@@ -2,26 +2,26 @@ package com.github.igp.PistonMechanisms;
 
 import org.bukkit.Material;
 
-public class Materials {
-	private final static Material[] materials = {
+public class Materials
+{
+	private final static Material[] materials = {};
 
-	};
-	
-	public final static Material[] getInvalidMaterials() {
+	public final static Material[] getInvalidMaterials()
+	{
 		return materials;
 	}
-	
-	public final static Boolean isValidMaterial(Material material)
+
+	public final static Boolean isValidMaterial(final Material material)
 	{
-		for (Material m : materials)
+		for (final Material m : materials)
 		{
 			if (m == material)
 				return false;
 		}
 		return true;
 	}
-	
-	public final static Boolean isValidBlock(Material material)
+
+	public final static Boolean isValidBlock(final Material material)
 	{
 		if (material.isBlock())
 		{
@@ -90,10 +90,18 @@ public class Materials {
 			if (material == Material.NETHER_WARTS)
 				return false;
 			if (material == Material.ENDER_PORTAL)
-				return false;			
-			
+				return false;
+
 			return true;
 		}
+		return false;
+	}
+
+	public final static Boolean isValidContainer(final Material material)
+	{
+		if ((material == Material.CHEST) || (material == Material.DISPENSER) || (material == Material.FURNACE) || (material == Material.BURNING_FURNACE))
+			return true;
+
 		return false;
 	}
 }
