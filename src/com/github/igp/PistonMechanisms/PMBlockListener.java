@@ -47,14 +47,14 @@ public class PMBlockListener implements Listener {
 						final Block nextdown = next.getRelative(BlockFace.DOWN);
 	
 						if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() == Material.STATIONARY_LAVA))
-							mechs.Bake(n);
+							mechs.bake(n);
 						else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() == Material.STATIONARY_WATER))
-							mechs.Wash(n);
+							mechs.wash(n);
 	
 						if (isValidContainer(next))
-							mechs.Store(n, next);
+							mechs.store(n, next);
 						else if (next.getType() == Material.OBSIDIAN)
-							mechs.Crush(n);
+							mechs.crush(n);
 					}
 				}
 			}
@@ -70,7 +70,7 @@ public class PMBlockListener implements Listener {
 			final Block n = b.getRelative(face, 2);
 			
 			if (isValidContainer(n))
-				mechs.Retreive(n, b.getRelative(face));
+				mechs.retrieve(n, b.getRelative(face));
 		}
 	}
 	
@@ -112,7 +112,7 @@ public class PMBlockListener implements Listener {
 	}
 
 	public boolean isNotAcceptedType(final Material type) {
-		if (type.equals(Material.OBSIDIAN) || type.equals(Material.BEDROCK) || type.equals(Material.NOTE_BLOCK) || type.equals(Material.AIR) || type.equals(Material.REDSTONE_WIRE) || type.equals(Material.REDSTONE_TORCH_OFF) || type.equals(Material.REDSTONE_TORCH_ON) || type.equals(Material.DIODE_BLOCK_OFF) || type.equals(Material.DIODE_BLOCK_ON) || type.equals(Material.RED_ROSE) || type.equals(Material.YELLOW_FLOWER) || type.equals(Material.RED_MUSHROOM) || type.equals(Material.BROWN_MUSHROOM) || type.equals(Material.SAPLING) || type.equals(Material.SIGN) || type.equals(Material.STONE_BUTTON) || type.equals(Material.LEVER) || type.equals(Material.LADDER) || type.equals(Material.WOODEN_DOOR) || type.equals(Material.IRON_DOOR_BLOCK) || type.equals(Material.TORCH) || type.equals(Material.WATER) || type.equals(Material.LAVA) || type.equals(Material.STATIONARY_LAVA) || type.equals(Material.STATIONARY_WATER) || type.equals(Material.FIRE) || type.equals(Material.PISTON_MOVING_PIECE)
+		if (type.equals(Material.OBSIDIAN) || type.equals(Material.BEDROCK) || type.equals(Material.NOTE_BLOCK)  || type.equals(Material.REDSTONE_WIRE) || type.equals(Material.REDSTONE_TORCH_OFF) || type.equals(Material.REDSTONE_TORCH_ON) || type.equals(Material.DIODE_BLOCK_OFF) || type.equals(Material.DIODE_BLOCK_ON) || type.equals(Material.RED_ROSE) || type.equals(Material.YELLOW_FLOWER) || type.equals(Material.RED_MUSHROOM) || type.equals(Material.BROWN_MUSHROOM) || type.equals(Material.SAPLING) || type.equals(Material.SIGN) || type.equals(Material.STONE_BUTTON) || type.equals(Material.LEVER) || type.equals(Material.LADDER) || type.equals(Material.WOODEN_DOOR) || type.equals(Material.IRON_DOOR_BLOCK) || type.equals(Material.TORCH) || type.equals(Material.WATER) || type.equals(Material.LAVA) || type.equals(Material.STATIONARY_LAVA) || type.equals(Material.STATIONARY_WATER) || type.equals(Material.FIRE) || type.equals(Material.PISTON_MOVING_PIECE)
 				|| type.equals(Material.PISTON_EXTENSION) || type.equals(Material.DISPENSER) || type.equals(Material.CHEST) || type.equals(Material.FURNACE) || type.equals(Material.BURNING_FURNACE) || type.equals(Material.DIODE)) {
 			return true;
 		}

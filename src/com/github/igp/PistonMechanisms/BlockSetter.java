@@ -3,11 +3,11 @@ package com.github.igp.PistonMechanisms;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-public class BlockCreator implements Runnable {
+public class BlockSetter implements Runnable {
 	private final Block block;
 	private final ItemStack stack;
 	
-	public BlockCreator(final Block block, final ItemStack stack){
+	public BlockSetter(final Block block, final ItemStack stack){
 		this.block = block;
 		this.stack = stack;
 	}
@@ -15,6 +15,6 @@ public class BlockCreator implements Runnable {
 	@Override
 	public void run() {
 		block.setType(stack.getType());
-		block.setData((byte)stack.getDurability());
+		block.setData(stack.getData().getData());
 	}
 }
