@@ -1,8 +1,11 @@
 package com.github.igp.PistonMechanisms;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -54,20 +57,36 @@ public class PMMechanisms {
 		}
 		else
 		{
-			for (Entity e : b.getChunk().getEntities())
+			final List<Location> locations = new ArrayList<Location>();
+			final List<Entity> entities = new ArrayList<Entity>();
+
+			for (final Entity e : b.getChunk().getEntities())
 			{
-				if ((e.getLocation().subtract(b.getLocation()).lengthSquared() < 1) && (e instanceof Item))
+				final Location loc = e.getLocation();
+				locations.add(new Location(e.getWorld(), loc.getX(), loc.getY(), loc.getZ(), loc.getPitch(), loc.getYaw()));
+				entities.add(e);
+			}
+			
+			if (locations.size() == entities.size())
+			{
+				for (int i = 0; i < locations.size(); i++)
 				{
-					ItemStack stack = ((Item) e).getItemStack();
-					HashMap<Integer, ItemStack> overflow = inv.addItem(stack);
-					
-					if (overflow.isEmpty())
-						e.remove();
-					else
+					if (entities.get(i) instanceof Item)
 					{
-						if (overflow.get(0).getAmount() < stack.getAmount())
+						if (locations.get(i).subtract(b.getLocation()).lengthSquared() <= 1)
 						{
-							stack.setAmount(overflow.get(0).getAmount());
+							final ItemStack stack = ((Item) entities.get(i)).getItemStack();
+							final HashMap<Integer, ItemStack> overflow = inv.addItem(stack);
+							
+							if (overflow.isEmpty())
+								entities.get(i).remove();
+							else
+							{
+								if (overflow.get(0).getAmount() < stack.getAmount())
+								{
+									stack.setAmount(overflow.get(0).getAmount());
+								}
+							}
 						}
 					}
 				}
@@ -102,14 +121,14 @@ public class PMMechanisms {
 		{
 			if (Materials.isValidBlock(stack.getType()))
 			{
-				BlockSetter creator = new BlockSetter(b, stack);
+				final BlockSetter creator = new BlockSetter(b, stack);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, creator, 1);
 			}
 			else
 			{
-				ItemStack drop = new ItemStack(stack);
+				final ItemStack drop = new ItemStack(stack);
 				drop.setAmount(1);
-				ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
+				final ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			}
 				
