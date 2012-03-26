@@ -76,7 +76,7 @@ public class PMBlockListener implements Listener {
 	
 	public Boolean isBlockPowered(Block b, BlockFace ignore)
 	{
-		for (BlockFace face : Faces.getValidFaces())
+		for (BlockFace face : Faces.getAdjacentFaces())
 		{						
 			if (face == ignore)
 				continue;
