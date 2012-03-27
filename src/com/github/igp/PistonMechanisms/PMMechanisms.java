@@ -18,32 +18,69 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class PMMechanisms
 {
 	JavaPlugin plugin;
+	PMConfiguration config;
 
 	public PMMechanisms(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
+		config = new PMConfiguration(plugin);
 	}
 
 	public void bake(final Block b)
 	{
+		if (!config.bake.isEnabled())
+			return;
 
+		final Material mat = config.bake.getProductMaterial(b.getType());
+
+		if ((mat != null) && Materials.isValidBlock(mat))
+			b.setType(mat);
 	}
 
 	public void wash(final Block b)
 	{
+		if (!config.wash.isEnabled())
+			return;
 
+		final Material mat = config.wash.getProductMaterial(b.getType());
+
+		if ((mat != null) && Materials.isValidBlock(mat))
+			b.setType(mat);
 	}
 
 	public void crush(final Block b)
 	{
-		b.breakNaturally();
+		if (!config.crush.isEnabled())
+			return;
+
+		if (config.crush.isOnBlackList(b.getType()))
+			return;
+
+		if (b.getType() == Material.AIR)
+			return;
+
+		if (config.crush.breakNaturally())
+			b.breakNaturally();
+		else
+		{
+			final ItemStack drop = new ItemStack(b.getType(), 1, (short) 0, b.getData());
+			final ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
+			b.setType(Material.AIR);
+		}
 	}
 
 	public void store(final Block b, final Block container)
 	{
+		if (!config.store.isEnabled())
+			return;
+
+		if (!config.store.isContainerEnabled(container.getType()))
+			return;
+
 		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
 
-		if (b.getType() != Material.AIR)
+		if ((b.getType() != Material.AIR) && config.store.isStoreBlocksEnabled() && !config.store.isOnBlackList(b.getType()))
 		{
 			final ItemStack stack = new ItemStack(b.getType(), 1, (short) 0, b.getData());
 
@@ -64,7 +101,7 @@ public class PMMechanisms
 			else if (inv.addItem(stack).size() == 0)
 				b.setType(Material.AIR);
 		}
-		else
+		else if (config.store.isStoreItemsEnabled())
 		{
 			final List<Location> locations = new ArrayList<Location>();
 			final List<Entity> entities = new ArrayList<Entity>();
@@ -85,6 +122,10 @@ public class PMMechanisms
 						if (locations.get(i).subtract(b.getLocation()).lengthSquared() <= 1)
 						{
 							final ItemStack stack = ((Item) entities.get(i)).getItemStack();
+
+							if (config.store.isOnBlackList(stack.getType()))
+								continue;
+
 							final HashMap<Integer, ItemStack> overflow = inv.addItem(stack);
 
 							if (overflow.isEmpty())
@@ -105,6 +146,12 @@ public class PMMechanisms
 
 	public void retrieve(final Block container, final Block b)
 	{
+		if (!config.retrieve.isEnabled())
+			return;
+
+		if (!config.retrieve.isContainerEnabled(container.getType()))
+			return;
+
 		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
 		ItemStack stack = null;
 		int loc;
@@ -121,31 +168,41 @@ public class PMMechanisms
 			{
 				if ((inv.getItem(loc) != null) && (inv.getItem(loc).getTypeId() != 0) && (inv.getItem(loc).getAmount() > 0))
 				{
-					stack = inv.getItem(loc);
-					break;
+					if (!config.retrieve.isOnBlackList(inv.getItem(loc).getType()))
+					{
+						stack = inv.getItem(loc);
+						break;
+					}
 				}
 			}
 		}
 
 		if (stack != null)
 		{
-			if (Materials.isValidBlock(stack.getType()))
+			Boolean update = false;
+
+			if (Materials.isValidBlock(stack.getType()) && config.retrieve.isRetrieveBlocksEnabled())
 			{
 				final BlockSetter creator = new BlockSetter(b, stack);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, creator, 1);
+				update = true;
 			}
-			else
+			else if (config.retrieve.isRetrieveItemsEnabled())
 			{
 				final ItemStack drop = new ItemStack(stack);
 				drop.setAmount(1);
 				final ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
+				update = true;
 			}
 
-			if (stack.getAmount() > 1)
-				stack.setAmount(stack.getAmount() - 1);
-			else
-				inv.clear(loc);
+			if (update == true)
+			{
+				if (stack.getAmount() > 1)
+					stack.setAmount(stack.getAmount() - 1);
+				else
+					inv.clear(loc);
+			}
 		}
 	}
 }

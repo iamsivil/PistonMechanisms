@@ -59,8 +59,7 @@ public class PMBlockListener implements Listener
 						{
 							final Block last = blocks.get(blocks.size() - 1).getRelative(face);
 							if ((last.getType() == Material.AIR) && Materials.isValidContainer(last.getRelative(face).getType()))
-								;
-							blocks.add(last);
+								blocks.add(last);
 						}
 					}
 
@@ -70,15 +69,15 @@ public class PMBlockListener implements Listener
 						final Block next = n.getRelative(face);
 						final Block nextdown = next.getRelative(BlockFace.DOWN);
 
-						if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() == Material.STATIONARY_LAVA))
-							mechs.bake(n);
-						else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() == Material.STATIONARY_WATER))
-							mechs.wash(n);
-
 						if (Materials.isValidContainer(next.getType()))
 							mechs.store(n, next);
 						else if (next.getType() == Material.OBSIDIAN)
 							mechs.crush(n);
+
+						if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() == Material.STATIONARY_LAVA))
+							mechs.bake(n);
+						else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() == Material.STATIONARY_WATER))
+							mechs.wash(n);
 					}
 				}
 			}

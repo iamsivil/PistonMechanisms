@@ -1,0 +1,32 @@
+Bake:
+    Enable: true
+    Recipes:
+        - 4 | 1
+        - 12 | Glass
+Wash:
+    Enable: true
+    Recipes:
+        - Gravel | Clay
+Crush:
+    Enable: true
+    BreakNaturally: true
+    Blacklist:
+        - 47
+Store:
+    Enable: true
+    EnableStoreBlocks: true
+    EnableStoreItems: true
+    EnableContainerChest: true
+    EnableContainerFurnace: true
+    EnableContainerDispenser: true
+    Blacklist:
+        - 47
+Retrieve:
+    Enable: true
+    EnableRetrieveBlocks: true
+    EnableRetrieveItems: true
+    EnableContainerChest: true
+    EnableContainerFurnace: true
+    EnableContainerDispenser: true
+    Blacklist:
+        - 47
