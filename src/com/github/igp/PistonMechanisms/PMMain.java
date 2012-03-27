@@ -18,12 +18,12 @@ public class PMMain extends JavaPlugin
 
 		getServer().getPluginManager().registerEvents(blockListener, this);
 
-		log.info("Enabled.");
+		log.info("Enabled");
 	}
 
 	@Override
 	public void onDisable()
 	{
-		log.info("Disabled.");
+		log.info("Disabled");
 	}
 }

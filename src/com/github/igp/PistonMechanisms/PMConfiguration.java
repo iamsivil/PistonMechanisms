@@ -1,5 +1,6 @@
 package com.github.igp.PistonMechanisms;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,14 @@ public class PMConfiguration
 	public PMConfiguration(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
+		
+		final File configFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
+		if ((configFile == null) || !configFile.exists())
+		{
+			plugin.getLogger().info("Configuration file not found: saving default");
+			plugin.saveDefaultConfig();
+		}
+			
 		config = plugin.getConfig();
 
 		bake = new Bake();
