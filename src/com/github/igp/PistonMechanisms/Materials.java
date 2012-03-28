@@ -15,7 +15,7 @@ public class Materials
 	{
 		for (final Material m : materials)
 		{
-			if (m == material)
+			if (m.equals(material))
 				return false;
 		}
 		return true;
@@ -25,71 +25,71 @@ public class Materials
 	{
 		if (material.isBlock())
 		{
-			if ((material == Material.REDSTONE_TORCH_ON) || (material == Material.REDSTONE_TORCH_OFF))
+			if (material.equals(Material.REDSTONE_TORCH_ON) || material.equals(Material.REDSTONE_TORCH_OFF))
 				return false;
-			if ((material == Material.PISTON_BASE) || (material == Material.PISTON_EXTENSION) || (material == Material.PISTON_MOVING_PIECE) || (material == Material.PISTON_STICKY_BASE))
+			if (material.equals(Material.PISTON_BASE) || material.equals(Material.PISTON_EXTENSION) || material.equals(Material.PISTON_MOVING_PIECE) || material.equals(Material.PISTON_STICKY_BASE))
 				return false;
-			if (material == Material.DISPENSER)
+			if (material.equals(Material.DISPENSER))
 				return false;
-			if (material == Material.SAPLING)
+			if (material.equals(Material.SAPLING))
 				return false;
-			if (material == Material.LONG_GRASS)
+			if (material.equals(Material.LONG_GRASS))
 				return false;
-			if (material == Material.DEAD_BUSH)
+			if (material.equals(Material.DEAD_BUSH))
 				return false;
-			if (material == Material.BED)
+			if (material.equals(Material.BED))
 				return false;
-			if (material == Material.BED_BLOCK)
+			if (material.equals(Material.BED_BLOCK))
 				return false;
-			if ((material == Material.WATER) || (material == Material.STATIONARY_WATER))
+			if (material.equals(Material.WATER) || material.equals(Material.STATIONARY_WATER))
 				return false;
-			if ((material == Material.LAVA) || (material == Material.STATIONARY_LAVA))
+			if (material.equals(Material.LAVA) || material.equals(Material.STATIONARY_LAVA))
 				return false;
-			if ((material == Material.RAILS) || (material == Material.POWERED_RAIL) || (material == Material.DETECTOR_RAIL))
+			if (material.equals(Material.RAILS) || material.equals(Material.POWERED_RAIL) || material.equals(Material.DETECTOR_RAIL))
 				return false;
-			if ((material == Material.RED_ROSE) || (material == Material.YELLOW_FLOWER))
+			if (material.equals(Material.RED_ROSE) || material.equals(Material.YELLOW_FLOWER))
 				return false;
-			if ((material == Material.BROWN_MUSHROOM) || (material == Material.RED_MUSHROOM))
+			if (material.equals(Material.BROWN_MUSHROOM) || material.equals(Material.RED_MUSHROOM))
 				return false;
-			if (material == Material.TORCH)
+			if (material.equals(Material.TORCH))
 				return false;
-			if (material == Material.FIRE)
+			if (material.equals(Material.FIRE))
 				return false;
-			if (material == Material.REDSTONE_WIRE)
+			if (material.equals(Material.REDSTONE_WIRE))
 				return false;
-			if (material == Material.CROPS)
+			if (material.equals(Material.CROPS))
 				return false;
-			if ((material == Material.FURNACE) || (material == Material.BURNING_FURNACE))
+			if (material.equals(Material.FURNACE) || material.equals(Material.BURNING_FURNACE))
 				return false;
-			if ((material == Material.SIGN_POST) || (material == Material.WALL_SIGN))
+			if (material.equals(Material.SIGN_POST) || material.equals(Material.WALL_SIGN))
 				return false;
-			if ((material == Material.WOODEN_DOOR) || (material == Material.WOOD_DOOR))
+			if (material.equals(Material.WOODEN_DOOR) || material.equals(Material.WOOD_DOOR))
 				return false;
-			if ((material == Material.IRON_DOOR) || (material == Material.IRON_DOOR_BLOCK))
+			if (material.equals(Material.IRON_DOOR) || material.equals(Material.IRON_DOOR_BLOCK))
 				return false;
-			if (material == Material.LADDER)
+			if (material.equals(Material.LADDER))
 				return false;
-			if (material == Material.LEVER)
+			if (material.equals(Material.LEVER))
 				return false;
-			if (material == Material.STONE_BUTTON)
+			if (material.equals(Material.STONE_BUTTON))
 				return false;
-			if (material == Material.PORTAL)
+			if (material.equals(Material.PORTAL))
 				return false;
-			if (material == Material.LOCKED_CHEST)
+			if (material.equals(Material.LOCKED_CHEST))
 				return false;
-			if ((material == Material.DIODE_BLOCK_ON) || (material == Material.DIODE_BLOCK_OFF))
+			if (material.equals(Material.DIODE_BLOCK_ON) || material.equals(Material.DIODE_BLOCK_OFF))
 				return false;
-			if (material == Material.MONSTER_EGGS)
+			if (material.equals(Material.MONSTER_EGGS))
 				return false;
-			if ((material == Material.PUMPKIN_STEM) || (material == Material.MELON_STEM))
+			if (material.equals(Material.PUMPKIN_STEM) || material.equals(Material.MELON_STEM))
 				return false;
-			if (material == Material.VINE)
+			if (material.equals(Material.VINE))
 				return false;
-			if (material == Material.WATER_LILY)
+			if (material.equals(Material.WATER_LILY))
 				return false;
-			if (material == Material.NETHER_WARTS)
+			if (material.equals(Material.NETHER_WARTS))
 				return false;
-			if (material == Material.ENDER_PORTAL)
+			if (material.equals(Material.ENDER_PORTAL))
 				return false;
 
 			return true;
@@ -99,7 +99,7 @@ public class Materials
 
 	public final static Boolean isValidContainer(final Material material)
 	{
-		if ((material == Material.CHEST) || (material == Material.DISPENSER) || (material == Material.FURNACE) || (material == Material.BURNING_FURNACE))
+		if (material.equals(Material.CHEST) || material.equals(Material.DISPENSER) || material.equals(Material.FURNACE) || material.equals(Material.BURNING_FURNACE))
 			return true;
 
 		return false;

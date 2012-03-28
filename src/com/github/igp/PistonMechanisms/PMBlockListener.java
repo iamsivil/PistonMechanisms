@@ -29,7 +29,7 @@ public class PMBlockListener implements Listener
 	public void onBlockPhysics(final BlockPhysicsEvent event)
 	{
 		final Block b = event.getBlock();
-		if ((b.getType() == Material.PISTON_BASE) || (b.getType() == Material.PISTON_STICKY_BASE))
+		if (b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE))
 		{
 			final BlockFace face = getPistonDirection(b.getData());
 
@@ -42,23 +42,23 @@ public class PMBlockListener implements Listener
 					for (int i = 1; i < 13; i++)
 					{
 						final Block n = b.getRelative(face, i);
-						if (!isNotAcceptedType(n.getType()))
-							blocks.add(n);
-						else
+						if (isNotAcceptedType(n.getType()))
 							break;
+						else
+							blocks.add(n);
 					}
 
 					if (blocks.size() < 12)
 					{
 						if (blocks.isEmpty())
 						{
-							if ((b.getRelative(face).getType() == Material.AIR) && Materials.isValidContainer((b.getRelative(face, 2).getType())))
+							if (b.getRelative(face).getType().equals(Material.AIR) && Materials.isValidContainer((b.getRelative(face, 2).getType())))
 								blocks.add(b.getRelative(face));
 						}
 						else
 						{
 							final Block last = blocks.get(blocks.size() - 1).getRelative(face);
-							if ((last.getType() == Material.AIR) && Materials.isValidContainer(last.getRelative(face).getType()))
+							if (last.getType().equals(Material.AIR) && Materials.isValidContainer(last.getRelative(face).getType()))
 								blocks.add(last);
 						}
 					}
@@ -71,12 +71,12 @@ public class PMBlockListener implements Listener
 
 						if (Materials.isValidContainer(next.getType()))
 							mechs.store(n, next);
-						else if (next.getType() == Material.OBSIDIAN)
+						else if (next.getType().equals(Material.OBSIDIAN))
 							mechs.crush(n);
 
-						if ((nextdown.getType() == Material.LAVA) || (nextdown.getType() == Material.STATIONARY_LAVA))
+						if (nextdown.getType().equals(Material.LAVA) || nextdown.getType().equals(Material.STATIONARY_LAVA))
 							mechs.bake(n);
-						else if ((nextdown.getType() == Material.WATER) || (nextdown.getType() == Material.STATIONARY_WATER))
+						else if (nextdown.getType().equals(Material.WATER) || nextdown.getType().equals(Material.STATIONARY_WATER))
 							mechs.wash(n);
 					}
 				}
@@ -102,7 +102,7 @@ public class PMBlockListener implements Listener
 	{
 		for (final BlockFace face : BlockFaces.getAdjacentFaces())
 		{
-			if (face == ignore)
+			if (face.equals(ignore))
 				continue;
 
 			if (b.getRelative(face).getBlockPower(face) == 0)

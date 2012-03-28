@@ -56,7 +56,7 @@ public class PMMechanisms
 		if (config.crush.isOnBlackList(b.getType()))
 			return;
 
-		if (b.getType() == Material.AIR)
+		if (b.getType().equals(Material.AIR))
 			return;
 
 		if (config.crush.breakNaturally())
@@ -80,11 +80,11 @@ public class PMMechanisms
 
 		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
 
-		if ((b.getType() != Material.AIR) && config.store.isStoreBlocksEnabled() && !config.store.isOnBlackList(b.getType()))
+		if (!b.getType().equals(Material.AIR) && config.store.isStoreBlocksEnabled() && !config.store.isOnBlackList(b.getType()))
 		{
 			final ItemStack stack = new ItemStack(b.getType(), 1, (short) 0, b.getData());
 
-			if ((container.getType() == Material.FURNACE) || (container.getType() == Material.BURNING_FURNACE))
+			if (container.getType().equals(Material.FURNACE) || container.getType().equals(Material.BURNING_FURNACE))
 			{
 				final ItemStack burnstack = inv.getItem(0);
 				if (burnstack == null)
@@ -92,7 +92,7 @@ public class PMMechanisms
 					inv.setItem(0, stack);
 					b.setType(Material.AIR);
 				}
-				else if ((burnstack.getType() == stack.getType()) && (burnstack.getData().getData() == stack.getData().getData()) && (burnstack.getAmount() < (65 - stack.getAmount())))
+				else if (burnstack.getType().equals(stack.getType()) && (burnstack.getData().getData() == stack.getData().getData()) && (burnstack.getAmount() < (65 - stack.getAmount())))
 				{
 					burnstack.setAmount(burnstack.getAmount() + stack.getAmount());
 					b.setType(Material.AIR);
@@ -156,7 +156,7 @@ public class PMMechanisms
 		ItemStack stack = null;
 		int loc;
 
-		if ((container.getType() == Material.FURNACE) || (container.getType() == Material.BURNING_FURNACE))
+		if (container.getType().equals(Material.FURNACE) || container.getType().equals(Material.BURNING_FURNACE))
 		{
 			loc = 2;
 			if ((inv.getItem(loc) != null) && (inv.getItem(loc).getTypeId() != 0) && (inv.getItem(loc).getAmount() > 0))
@@ -196,7 +196,7 @@ public class PMMechanisms
 				update = true;
 			}
 
-			if (update == true)
+			if (update)
 			{
 				if (stack.getAmount() > 1)
 					stack.setAmount(stack.getAmount() - 1);

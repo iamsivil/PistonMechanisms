@@ -78,7 +78,7 @@ public class PMConfiguration
 		{
 			for (final ArrayList<Material> recipe : recipes)
 			{
-				if (recipe.get(0) == material)
+				if (recipe.get(0).equals(material))
 					return recipe.get(1);
 			}
 
@@ -131,7 +131,7 @@ public class PMConfiguration
 		{
 			for (final Material m : blackList)
 			{
-				if (m == material)
+				if (m.equals(material))
 					return true;
 			}
 
@@ -187,13 +187,13 @@ public class PMConfiguration
 
 		public Boolean isContainerEnabled(final Material material)
 		{
-			if (material == Material.CHEST)
+			if (material.equals(Material.CHEST))
 				return enableContainerChest;
 
-			if (material == Material.DISPENSER)
+			if (material.equals(Material.DISPENSER))
 				return enableContainerDispenser;
 
-			if ((material == Material.FURNACE) || (material == Material.BURNING_FURNACE))
+			if (material.equals(Material.FURNACE) || material.equals(Material.BURNING_FURNACE))
 				return enableContainerFurnace;
 
 			return null;
@@ -203,7 +203,7 @@ public class PMConfiguration
 		{
 			for (final Material m : blackList)
 			{
-				if (m == material)
+				if (m.equals(material))
 					return true;
 			}
 
@@ -259,13 +259,13 @@ public class PMConfiguration
 
 		public Boolean isContainerEnabled(final Material material)
 		{
-			if (material == Material.CHEST)
+			if (material.equals(Material.CHEST))
 				return enableContainerChest;
 
-			if (material == Material.DISPENSER)
+			if (material.equals(Material.DISPENSER))
 				return enableContainerDispenser;
 
-			if ((material == Material.FURNACE) || (material == Material.BURNING_FURNACE))
+			if (material.equals(Material.FURNACE) || material.equals(Material.BURNING_FURNACE))
 				return enableContainerFurnace;
 
 			return null;
@@ -275,7 +275,7 @@ public class PMConfiguration
 		{
 			for (final Material m : blackList)
 			{
-				if (m == material)
+				if (m.equals(material))
 					return true;
 			}
 
