@@ -8,12 +8,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.igp.IGHelpers.Materials;
+import com.github.igp.IGHelpers.MaterialHelper;
 
 public class PMConfiguration
 {
 	@SuppressWarnings("unused")
 	private final JavaPlugin plugin;
+	private final MaterialHelper materialHelper;
 	private final FileConfiguration config;
 	public Bake bake;
 	public Wash wash;
@@ -24,6 +25,8 @@ public class PMConfiguration
 	public PMConfiguration(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
+		materialHelper = new MaterialHelper();
+		
 		
 		final File configFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
 		if ((configFile == null) || !configFile.exists())
@@ -62,8 +65,8 @@ public class PMConfiguration
 					final String i = s.split("\\|")[0].trim().toUpperCase();
 					final String p = s.split("\\|")[1].trim().toUpperCase();
 
-					final Material initial = Materials.getMaterialFromString(i);
-					final Material product = Materials.getMaterialFromString(p);
+					final Material initial = materialHelper.getMaterialFromString(i);
+					final Material product = materialHelper.getMaterialFromString(p);
 
 					if ((initial == null) || (product == null))
 						continue;
@@ -115,7 +118,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Crush.Blacklist"))
 			{
-				final Material material = Materials.getMaterialFromString(s);
+				final Material material = materialHelper.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -168,7 +171,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Store.Blacklist"))
 			{
-				final Material material = Materials.getMaterialFromString(s);
+				final Material material = materialHelper.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -240,7 +243,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Retrieve.Blacklist"))
 			{
-				final Material material = Materials.getMaterialFromString(s);
+				final Material material = materialHelper.getMaterialFromString(s);
 
 				if (material == null)
 					continue;

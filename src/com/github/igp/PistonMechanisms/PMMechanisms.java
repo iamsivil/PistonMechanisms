@@ -17,16 +17,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igp.IGHelpers.BlockSetter;
 import com.github.igp.IGHelpers.ItemStackDropper;
-import com.github.igp.IGHelpers.Materials;
+import com.github.igp.IGHelpers.MaterialHelper;
 
 public class PMMechanisms
 {
 	JavaPlugin plugin;
+	private final MaterialHelper materialHelper;
 	PMConfiguration config;
 
 	public PMMechanisms(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
+		materialHelper = new MaterialHelper();
 		config = new PMConfiguration(plugin);
 	}
 
@@ -37,7 +39,7 @@ public class PMMechanisms
 
 		final Material mat = config.bake.getProductMaterial(b.getType());
 
-		if ((mat != null) && Materials.isValidBlock(mat))
+		if ((mat != null) && materialHelper.isValidBlockMaterial(mat))
 			b.setType(mat);
 	}
 
@@ -48,7 +50,7 @@ public class PMMechanisms
 
 		final Material mat = config.wash.getProductMaterial(b.getType());
 
-		if ((mat != null) && Materials.isValidBlock(mat))
+		if ((mat != null) && materialHelper.isValidBlockMaterial(mat))
 			b.setType(mat);
 	}
 
@@ -185,7 +187,7 @@ public class PMMechanisms
 		{
 			Boolean update = false;
 
-			if (Materials.isValidBlock(stack.getType()) && config.retrieve.isRetrieveBlocksEnabled())
+			if (materialHelper.isValidBlockMaterial(stack.getType()) && config.retrieve.isRetrieveBlocksEnabled())
 			{
 				final BlockSetter creator = new BlockSetter(b, stack);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, creator, 1);

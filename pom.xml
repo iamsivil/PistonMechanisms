@@ -15,7 +15,35 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.bukkit:bukkit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+    <resources>
+        <resource>
+        <directory>src</directory>
+            <includes>
+                <include>*.yml</include>
+            </includes>
+        </resource>
+    </resources>
   </build>
   <scm>
   	<url>https://github.com/IGP/PistonMechanisms</url>

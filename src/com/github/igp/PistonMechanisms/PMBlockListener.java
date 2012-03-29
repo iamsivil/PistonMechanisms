@@ -13,19 +13,23 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.igp.IGHelpers.BlockFaces;
-import com.github.igp.IGHelpers.Materials;
+import com.github.igp.IGHelpers.BlockFaceHelper;
+import com.github.igp.IGHelpers.MaterialHelper;
 
 public class PMBlockListener implements Listener
 {
 	@SuppressWarnings("unused")
 	private final JavaPlugin plugin;
 	private final PMMechanisms mechs;
+	private final BlockFaceHelper blockFaceHelper;
+	private final MaterialHelper materialHelper;
 
 	public PMBlockListener(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
 		mechs = new PMMechanisms(plugin);
+		blockFaceHelper = new BlockFaceHelper();
+		materialHelper = new MaterialHelper();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -55,13 +59,13 @@ public class PMBlockListener implements Listener
 					{
 						if (blocks.isEmpty())
 						{
-							if (b.getRelative(face).getType().equals(Material.AIR) && Materials.isValidContainer((b.getRelative(face, 2).getType())))
+							if (b.getRelative(face).getType().equals(Material.AIR) && materialHelper.isValidContainer((b.getRelative(face, 2).getType())))
 								blocks.add(b.getRelative(face));
 						}
 						else
 						{
 							final Block last = blocks.get(blocks.size() - 1).getRelative(face);
-							if (last.getType().equals(Material.AIR) && Materials.isValidContainer(last.getRelative(face).getType()))
+							if (last.getType().equals(Material.AIR) && materialHelper.isValidContainer(last.getRelative(face).getType()))
 								blocks.add(last);
 						}
 					}
@@ -72,7 +76,7 @@ public class PMBlockListener implements Listener
 						final Block next = n.getRelative(face);
 						final Block nextdown = next.getRelative(BlockFace.DOWN);
 
-						if (Materials.isValidContainer(next.getType()))
+						if (materialHelper.isValidContainer(next.getType()))
 							mechs.store(n, next);
 						else if (next.getType().equals(Material.OBSIDIAN))
 							mechs.crush(n);
@@ -96,14 +100,14 @@ public class PMBlockListener implements Listener
 			final BlockFace face = getPistonDirection(b.getData());
 			final Block n = b.getRelative(face, 2);
 
-			if (Materials.isValidContainer(n.getType()))
+			if (materialHelper.isValidContainer(n.getType()))
 				mechs.retrieve(n, b.getRelative(face));
 		}
 	}
 
 	public Boolean isBlockPowered(final Block b, final BlockFace ignore)
 	{
-		for (final BlockFace face : BlockFaces.getAdjacentFaces())
+		for (final BlockFace face : blockFaceHelper.getAdjacentFaces())
 		{
 			if (face.equals(ignore))
 				continue;
