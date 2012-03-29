@@ -15,6 +15,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.igp.IGHelpers.BlockSetter;
+import com.github.igp.IGHelpers.ItemStackDropper;
+import com.github.igp.IGHelpers.Materials;
+
 public class PMMechanisms
 {
 	JavaPlugin plugin;

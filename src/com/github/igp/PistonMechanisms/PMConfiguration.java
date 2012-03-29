@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.igp.IGHelpers.Materials;
+
 public class PMConfiguration
 {
 	@SuppressWarnings("unused")
@@ -60,8 +62,8 @@ public class PMConfiguration
 					final String i = s.split("\\|")[0].trim().toUpperCase();
 					final String p = s.split("\\|")[1].trim().toUpperCase();
 
-					final Material initial = getMaterialFromString(i);
-					final Material product = getMaterialFromString(p);
+					final Material initial = Materials.getMaterialFromString(i);
+					final Material product = Materials.getMaterialFromString(p);
 
 					if ((initial == null) || (product == null))
 						continue;
@@ -113,7 +115,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Crush.Blacklist"))
 			{
-				final Material material = getMaterialFromString(s);
+				final Material material = Materials.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -166,7 +168,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Store.Blacklist"))
 			{
-				final Material material = getMaterialFromString(s);
+				final Material material = Materials.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -238,7 +240,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Retrieve.Blacklist"))
 			{
-				final Material material = getMaterialFromString(s);
+				final Material material = Materials.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -291,23 +293,5 @@ public class PMConfiguration
 		{
 			return enabled;
 		}
-	}
-
-	private Material getMaterialFromString(final String s)
-	{
-		Material material = null;
-
-		try
-		{
-			material = Material.getMaterial(Integer.parseInt(s));
-		}
-		catch (final NumberFormatException ex)
-		{
-		}
-
-		if (material == null)
-			material = Material.getMaterial(s);
-
-		return material;
 	}
 }

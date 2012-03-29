@@ -13,6 +13,9 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.igp.IGHelpers.BlockFaces;
+import com.github.igp.IGHelpers.Materials;
+
 public class PMBlockListener implements Listener
 {
 	@SuppressWarnings("unused")

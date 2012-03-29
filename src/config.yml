@@ -6,6 +6,7 @@ Bake:
     Recipes:
         - 4 | 1
         - 12 | Glass
+        - 88 | 89
 Wash:
     Enable: true
     Recipes:

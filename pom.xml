@@ -28,5 +28,10 @@
   		<artifactId>bukkit</artifactId>
   		<version>1.2.4-R0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.github.igp</groupId>
+  		<artifactId>IGHelpers</artifactId>
+  		<version>0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>
