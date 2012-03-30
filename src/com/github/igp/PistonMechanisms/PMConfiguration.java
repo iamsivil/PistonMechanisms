@@ -31,7 +31,9 @@ public class PMConfiguration
 		if ((configFile == null) || !configFile.exists())
 		{
 			plugin.getLogger().info("Configuration file not found: saving default");
-			plugin.saveDefaultConfig();
+			plugin.saveResource("pmconfig.yml", false);
+			final File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "pmconfig.yml");
+			f.renameTo(configFile);
 		}
 
 		config = plugin.getConfig();
@@ -54,7 +56,7 @@ public class PMConfiguration
 
 		private void load(final String base)
 		{
-			super.enabled = config.getString(base + ".Enable").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString(base + ".Enable", "true").equalsIgnoreCase("true") ? true : false;
 			recipes = new ArrayList<ArrayList<Material>>();
 
 			for (final String s : config.getStringList(base + ".Recipes"))
@@ -111,8 +113,8 @@ public class PMConfiguration
 
 		private void load()
 		{
-			super.enabled = config.getString("Crush.Enable").equalsIgnoreCase("true") ? true : false;
-			breakNaturally = config.getString("Crush.BreakNaturally").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Crush.Enable", "true").equalsIgnoreCase("true") ? true : false;
+			breakNaturally = config.getString("Crush.BreakNaturally", "true").equalsIgnoreCase("true") ? true : false;
 			blackList = new ArrayList<Material>();
 
 			for (final String s : config.getStringList("Crush.Blacklist"))
@@ -150,6 +152,8 @@ public class PMConfiguration
 		private Boolean enableContainerChest;
 		private Boolean enableContainerFurnace;
 		private Boolean enableContainerDispenser;
+		private Double maxItemStoreDistance;
+		private Double maxItemStoreDistanceSquared;
 
 		private List<Material> blackList;
 
@@ -160,12 +164,20 @@ public class PMConfiguration
 
 		private void load()
 		{
-			super.enabled = config.getString("Store.Enable").equalsIgnoreCase("true") ? true : false;
-			enableStoreBlocks = config.getString("Store.EnableStoreBlocks").equalsIgnoreCase("true") ? true : false;
-			enableStoreItems = config.getString("Store.EnableStoreItems").equalsIgnoreCase("true") ? true : false;
-			enableContainerChest = config.getString("Store.EnableContainerChest").equalsIgnoreCase("true") ? true : false;
-			enableContainerFurnace = config.getString("Store.EnableContainerFurnace").equalsIgnoreCase("true") ? true : false;
-			enableContainerDispenser = config.getString("Store.EnableContainerDispenser").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Store.Enable", "true").equalsIgnoreCase("true") ? true : false;
+			enableStoreBlocks = config.getString("Store.EnableStoreBlocks", "true").equalsIgnoreCase("true") ? true : false;
+			enableStoreItems = config.getString("Store.EnableStoreItems", "true").equalsIgnoreCase("true") ? true : false;
+			enableContainerChest = config.getString("Store.EnableContainerChest", "true").equalsIgnoreCase("true") ? true : false;
+			enableContainerFurnace = config.getString("Store.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
+			enableContainerDispenser = config.getString("Store.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
+			
+			maxItemStoreDistance = config.getDouble("Store.MaxItemStoreDistance", 1.25);
+			if (maxItemStoreDistance < 0.5)
+				maxItemStoreDistance = 0.5;
+			else if (maxItemStoreDistance > 4.5)
+				maxItemStoreDistance = 4.5;
+			maxItemStoreDistanceSquared = Math.pow(maxItemStoreDistance, 2.0);			
+				
 			blackList = new ArrayList<Material>();
 
 			for (final String s : config.getStringList("Store.Blacklist"))
@@ -177,6 +189,16 @@ public class PMConfiguration
 
 				blackList.add(material);
 			}
+		}
+		
+		public Double getMaxItemStoreDistance()
+		{
+			return maxItemStoreDistance;
+		}
+		
+		public Double getMaxItemStoreDistanceSquared()
+		{
+			return maxItemStoreDistanceSquared;
 		}
 
 		public Boolean isStoreBlocksEnabled()
@@ -232,12 +254,12 @@ public class PMConfiguration
 
 		private void load()
 		{
-			super.enabled = config.getString("Retrieve.Enable").equalsIgnoreCase("true") ? true : false;
-			enableRetrieveBlocks = config.getString("Retrieve.EnableRetrieveBlocks").equalsIgnoreCase("true") ? true : false;
-			enableRetrieveItems = config.getString("Retrieve.EnableRetrieveItems").equalsIgnoreCase("true") ? true : false;
-			enableContainerChest = config.getString("Retrieve.EnableContainerChest").equalsIgnoreCase("true") ? true : false;
-			enableContainerFurnace = config.getString("Retrieve.EnableContainerFurnace").equalsIgnoreCase("true") ? true : false;
-			enableContainerDispenser = config.getString("Retrieve.EnableContainerDispenser").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Retrieve.Enable", "true").equalsIgnoreCase("true") ? true : false;
+			enableRetrieveBlocks = config.getString("Retrieve.EnableRetrieveBlocks", "true").equalsIgnoreCase("true") ? true : false;
+			enableRetrieveItems = config.getString("Retrieve.EnableRetrieveItems", "true").equalsIgnoreCase("true") ? true : false;
+			enableContainerChest = config.getString("Retrieve.EnableContainerChest", "true").equalsIgnoreCase("true") ? true : false;
+			enableContainerFurnace = config.getString("Retrieve.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
+			enableContainerDispenser = config.getString("Retrieve.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
 			blackList = new ArrayList<Material>();
 
 			for (final String s : config.getStringList("Retrieve.Blacklist"))

@@ -15,6 +15,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.igp.IGHelpers.BlockHelper;
 import com.github.igp.IGHelpers.BlockSetter;
 import com.github.igp.IGHelpers.ItemStackDropper;
 import com.github.igp.IGHelpers.MaterialHelper;
@@ -23,12 +24,14 @@ public class PMMechanisms
 {
 	JavaPlugin plugin;
 	private final MaterialHelper materialHelper;
+	private final BlockHelper blockHelper;
 	PMConfiguration config;
 
 	public PMMechanisms(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
 		materialHelper = new MaterialHelper();
+		blockHelper = new BlockHelper();
 		config = new PMConfiguration(plugin);
 	}
 
@@ -115,17 +118,19 @@ public class PMMechanisms
 			for (final Entity e : b.getChunk().getEntities())
 			{
 				final Location loc = e.getLocation();
-				locations.add(new Location(e.getWorld(), loc.getX(), loc.getY(), loc.getZ(), loc.getPitch(), loc.getYaw()));
+				locations.add(new Location(e.getWorld(), loc.getX(), loc.getY(), loc.getZ()));
 				entities.add(e);
 			}
 
 			if (locations.size() == entities.size())
 			{
+				final Location bCenter = blockHelper.getBlockCenter(b);
+				
 				for (int i = 0; i < locations.size(); i++)
 				{
 					if (entities.get(i) instanceof Item)
 					{
-						if (locations.get(i).subtract(b.getLocation()).lengthSquared() <= 1)
+						if (locations.get(i).subtract(bCenter).lengthSquared() <= config.store.getMaxItemStoreDistanceSquared())
 						{
 							final ItemStack stack = ((Item) entities.get(i)).getItemStack();
 
