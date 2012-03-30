@@ -26,15 +26,14 @@ public class PMConfiguration
 	{
 		this.plugin = plugin;
 		materialHelper = new MaterialHelper();
-		
-		
+
 		final File configFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
 		if ((configFile == null) || !configFile.exists())
 		{
 			plugin.getLogger().info("Configuration file not found: saving default");
 			plugin.saveDefaultConfig();
 		}
-			
+
 		config = plugin.getConfig();
 
 		bake = new Bake();
