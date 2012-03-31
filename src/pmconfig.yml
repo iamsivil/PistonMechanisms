@@ -26,8 +26,8 @@ Store:
     EnableContainerChest: true
     EnableContainerFurnace: true
     EnableContainerDispenser: true
-    MaxItemStoreDistance: 1.0
-    MaxVehicleStoreDistance: 1.25
+    MaxItemStoreDistance: 1.1
+    MaxVehicleStoreDistance: 2.25
     Blacklist:
         - 47
 Retrieve:

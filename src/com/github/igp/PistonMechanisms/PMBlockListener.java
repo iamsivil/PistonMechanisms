@@ -99,10 +99,20 @@ public class PMBlockListener implements Listener
 		{
 			final Block b = event.getBlock();
 			final BlockFace face = ((PistonBaseMaterial) b.getState().getData()).getFacing();
-			final Block n = b.getRelative(face, 2);
+			final Block n = b.getRelative(face);
+			final Block next = n.getRelative(face);
+			final Block ndown = n.getRelative(BlockFace.DOWN);
 
-			if (materialHelper.isValidContainerMaterial(n.getType()))
-				mechs.retrieve(n, b.getRelative(face));
+			final Material nmat;
+			if (materialHelper.isValidContainerMaterial(next.getType()))
+				nmat = mechs.retrieve(next, n);
+			else
+				nmat = next.getType();
+
+			if (ndown.getType().equals(Material.LAVA) || ndown.getType().equals(Material.STATIONARY_LAVA))
+				mechs.bake(n, nmat, 1);
+			else if (ndown.getType().equals(Material.WATER) || ndown.getType().equals(Material.STATIONARY_WATER))
+				mechs.wash(n, nmat, 1);
 		}
 	}
 

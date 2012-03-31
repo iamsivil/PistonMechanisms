@@ -60,6 +60,25 @@ public class PMMechanisms
 			b.setType(mat);
 	}
 
+	public void bake(final Block b, final long delay)
+	{
+		bake(b, b.getType(), delay);
+	}
+
+	public void bake(final Block b, final Material material, final long delay)
+	{
+		if (!config.bake.isEnabled())
+			return;
+
+		final Material mat = config.bake.getProductMaterial(material);
+
+		if ((mat != null) && materialHelper.isValidBlockMaterial(material))
+		{
+			final BlockSetter creator = new BlockSetter(b, mat);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, creator, delay);
+		}
+	}
+
 	public void wash(final Block b)
 	{
 		if (!config.wash.isEnabled())
@@ -69,6 +88,25 @@ public class PMMechanisms
 
 		if ((mat != null) && materialHelper.isValidBlockMaterial(mat))
 			b.setType(mat);
+	}
+
+	public void wash(final Block b, final long delay)
+	{
+		wash(b, b.getType(), delay);
+	}
+
+	public void wash(final Block b, final Material material, final long delay)
+	{
+		if (!config.wash.isEnabled())
+			return;
+
+		final Material mat = config.wash.getProductMaterial(material);
+
+		if ((mat != null) && materialHelper.isValidBlockMaterial(material))
+		{
+			final BlockSetter creator = new BlockSetter(b, mat);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, creator, delay);
+		}
 	}
 
 	public void crush(final Block b)
@@ -221,13 +259,13 @@ public class PMMechanisms
 		}
 	}
 
-	public void retrieve(final Block container, final Block b)
+	public Material retrieve(final Block container, final Block b)
 	{
 		if (!config.retrieve.isEnabled())
-			return;
+			return null;
 
 		if (!config.retrieve.isContainerEnabled(container.getType()))
-			return;
+			return null;
 
 		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
 		ItemStack stack = null;
@@ -279,12 +317,16 @@ public class PMMechanisms
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			}
 			else
-				return;
+				return null;
 
 			if (stack.getAmount() > 1)
 				stack.setAmount(stack.getAmount() - 1);
 			else
 				inv.clear(loc);
+
+			return stack.getType();
 		}
+
+		return null;
 	}
 }
