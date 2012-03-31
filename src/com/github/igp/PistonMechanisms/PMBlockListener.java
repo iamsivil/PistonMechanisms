@@ -14,7 +14,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.igp.IGHelpers.BlockFaceHelper;
+import com.github.igp.IGHelpers.BlockHelper;
 import com.github.igp.IGHelpers.MaterialHelper;
 
 public class PMBlockListener implements Listener
@@ -22,15 +22,15 @@ public class PMBlockListener implements Listener
 	@SuppressWarnings("unused")
 	private final JavaPlugin plugin;
 	private final PMMechanisms mechs;
-	private final BlockFaceHelper blockFaceHelper;
+	private final BlockHelper blockHelper;
 	private final MaterialHelper materialHelper;
 
 	public PMBlockListener(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
 		mechs = new PMMechanisms(plugin);
-		blockFaceHelper = new BlockFaceHelper();
 		materialHelper = new MaterialHelper();
+		blockHelper = new BlockHelper();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -43,7 +43,7 @@ public class PMBlockListener implements Listener
 
 			if (b.isBlockPowered() || b.isBlockIndirectlyPowered())
 			{
-				if (isBlockPowered(b, face))
+				if (blockHelper.isBlockPowered(b, face))
 				{
 					final List<Block> blocks = new ArrayList<Block>(12);
 
@@ -114,22 +114,6 @@ public class PMBlockListener implements Listener
 			else if (ndown.getType().equals(Material.WATER) || ndown.getType().equals(Material.STATIONARY_WATER))
 				mechs.wash(n, nmat, 1);
 		}
-	}
-
-	public Boolean isBlockPowered(final Block b, final BlockFace ignore)
-	{
-		for (final BlockFace face : blockFaceHelper.getAdjacentFaces())
-		{
-			if (face.equals(ignore))
-				continue;
-
-			if (b.getRelative(face).getBlockPower(face) == 0)
-				continue;
-
-			return true;
-		}
-
-		return false;
 	}
 
 	public boolean isNotAcceptedType(final Material type)
