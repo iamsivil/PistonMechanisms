@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igp.IGHelpers.BlockFaceHelper;
@@ -38,7 +39,7 @@ public class PMBlockListener implements Listener
 		final Block b = event.getBlock();
 		if (b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE))
 		{
-			final BlockFace face = getPistonDirection(b.getData());
+			final BlockFace face = ((PistonBaseMaterial) b.getState().getData()).getFacing();
 
 			if (b.isBlockPowered() || b.isBlockIndirectlyPowered())
 			{
@@ -59,13 +60,13 @@ public class PMBlockListener implements Listener
 					{
 						if (blocks.isEmpty())
 						{
-							if (b.getRelative(face).getType().equals(Material.AIR) && materialHelper.isValidContainer((b.getRelative(face, 2).getType())))
+							if (b.getRelative(face).getType().equals(Material.AIR) && materialHelper.isValidContainerMaterial((b.getRelative(face, 2).getType())))
 								blocks.add(b.getRelative(face));
 						}
 						else
 						{
 							final Block last = blocks.get(blocks.size() - 1).getRelative(face);
-							if (last.getType().equals(Material.AIR) && materialHelper.isValidContainer(last.getRelative(face).getType()))
+							if (last.getType().equals(Material.AIR) && materialHelper.isValidContainerMaterial(last.getRelative(face).getType()))
 								blocks.add(last);
 						}
 					}
@@ -76,7 +77,7 @@ public class PMBlockListener implements Listener
 						final Block next = n.getRelative(face);
 						final Block nextdown = next.getRelative(BlockFace.DOWN);
 
-						if (materialHelper.isValidContainer(next.getType()))
+						if (materialHelper.isValidContainerMaterial(next.getType()))
 							mechs.store(n, next);
 						else if (next.getType().equals(Material.OBSIDIAN))
 							mechs.crush(n);
@@ -97,10 +98,10 @@ public class PMBlockListener implements Listener
 		if (event.isSticky())
 		{
 			final Block b = event.getBlock();
-			final BlockFace face = getPistonDirection(b.getData());
+			final BlockFace face = ((PistonBaseMaterial) b.getState().getData()).getFacing();
 			final Block n = b.getRelative(face, 2);
 
-			if (materialHelper.isValidContainer(n.getType()))
+			if (materialHelper.isValidContainerMaterial(n.getType()))
 				mechs.retrieve(n, b.getRelative(face));
 		}
 	}
@@ -119,29 +120,6 @@ public class PMBlockListener implements Listener
 		}
 
 		return false;
-	}
-
-	public BlockFace getPistonDirection(byte data)
-	{
-		data = (byte) (data & 0x7);
-
-		switch (data)
-		{
-			case 0:
-				return BlockFace.DOWN;
-			case 1:
-				return BlockFace.UP;
-			case 2:
-				return BlockFace.EAST;
-			case 3:
-				return BlockFace.WEST;
-			case 4:
-				return BlockFace.NORTH;
-			case 5:
-				return BlockFace.SOUTH;
-		}
-
-		return null;
 	}
 
 	public boolean isNotAcceptedType(final Material type)

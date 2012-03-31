@@ -149,11 +149,16 @@ public class PMConfiguration
 	{
 		private Boolean enableStoreBlocks;
 		private Boolean enableStoreItems;
+		private Boolean enableStoreVehicles;
+		private Boolean enableStoreAnimals;
+		private Boolean enableStoreMonsters;
 		private Boolean enableContainerChest;
 		private Boolean enableContainerFurnace;
 		private Boolean enableContainerDispenser;
 		private Double maxItemStoreDistance;
 		private Double maxItemStoreDistanceSquared;
+		private Double maxVehicleStoreDistance;
+		private Double maxVehicleStoreDistanceSquared;
 
 		private List<Material> blackList;
 
@@ -167,17 +172,27 @@ public class PMConfiguration
 			super.enabled = config.getString("Store.Enable", "true").equalsIgnoreCase("true") ? true : false;
 			enableStoreBlocks = config.getString("Store.EnableStoreBlocks", "true").equalsIgnoreCase("true") ? true : false;
 			enableStoreItems = config.getString("Store.EnableStoreItems", "true").equalsIgnoreCase("true") ? true : false;
+			enableStoreVehicles = config.getString("Store.EnableStoreVehicles", "true").equalsIgnoreCase("true") ? true : false;
+			enableStoreAnimals = config.getString("Store.EnableStoreAnimals", "true").equalsIgnoreCase("true") ? true : false;
+			enableStoreMonsters = config.getString("Store.EnableStoreMonsters", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerChest = config.getString("Store.EnableContainerChest", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerFurnace = config.getString("Store.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerDispenser = config.getString("Store.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
-			
+
 			maxItemStoreDistance = config.getDouble("Store.MaxItemStoreDistance", 1.25);
 			if (maxItemStoreDistance < 0.5)
 				maxItemStoreDistance = 0.5;
 			else if (maxItemStoreDistance > 4.5)
 				maxItemStoreDistance = 4.5;
-			maxItemStoreDistanceSquared = Math.pow(maxItemStoreDistance, 2.0);			
-				
+			maxItemStoreDistanceSquared = Math.pow(maxItemStoreDistance, 2.0);
+
+			maxVehicleStoreDistance = config.getDouble("Store.MaxVehicleStoreDistance", 1.25);
+			if (maxVehicleStoreDistance < 0.5)
+				maxVehicleStoreDistance = 0.5;
+			else if (maxVehicleStoreDistance > 4.5)
+				maxVehicleStoreDistance = 4.5;
+			maxVehicleStoreDistanceSquared = Math.pow(maxVehicleStoreDistance, 2.0);
+
 			blackList = new ArrayList<Material>();
 
 			for (final String s : config.getStringList("Store.Blacklist"))
@@ -190,15 +205,25 @@ public class PMConfiguration
 				blackList.add(material);
 			}
 		}
-		
+
 		public Double getMaxItemStoreDistance()
 		{
 			return maxItemStoreDistance;
 		}
-		
+
 		public Double getMaxItemStoreDistanceSquared()
 		{
 			return maxItemStoreDistanceSquared;
+		}
+
+		public Double getMaxVehicleStoreDistance()
+		{
+			return maxVehicleStoreDistance;
+		}
+
+		public Double getMaxVehicleStoreDistanceSquared()
+		{
+			return maxVehicleStoreDistanceSquared;
 		}
 
 		public Boolean isStoreBlocksEnabled()
@@ -209,6 +234,21 @@ public class PMConfiguration
 		public Boolean isStoreItemsEnabled()
 		{
 			return enableStoreItems;
+		}
+
+		public Boolean isStoreVehiclesEnabled()
+		{
+			return enableStoreVehicles;
+		}
+
+		public Boolean isStoreAnimalsEnabled()
+		{
+			return enableStoreAnimals;
+		}
+
+		public Boolean isStoreMonstersEnabled()
+		{
+			return enableStoreMonsters;
 		}
 
 		public Boolean isContainerEnabled(final Material material)
@@ -241,6 +281,9 @@ public class PMConfiguration
 	{
 		private Boolean enableRetrieveBlocks;
 		private Boolean enableRetrieveItems;
+		private Boolean enableRetrieveVehicles;
+		private Boolean enableRetrieveAnimals;
+		private Boolean enableRetrieveMonsters;
 		private Boolean enableContainerChest;
 		private Boolean enableContainerFurnace;
 		private Boolean enableContainerDispenser;
@@ -257,6 +300,9 @@ public class PMConfiguration
 			super.enabled = config.getString("Retrieve.Enable", "true").equalsIgnoreCase("true") ? true : false;
 			enableRetrieveBlocks = config.getString("Retrieve.EnableRetrieveBlocks", "true").equalsIgnoreCase("true") ? true : false;
 			enableRetrieveItems = config.getString("Retrieve.EnableRetrieveItems", "true").equalsIgnoreCase("true") ? true : false;
+			enableRetrieveVehicles = config.getString("Retrieve.EnableRetrieveVehicles", "true").equalsIgnoreCase("true") ? true : false;
+			enableRetrieveAnimals = config.getString("Retrieve.EnableRetrieveAnimals", "true").equalsIgnoreCase("true") ? true : false;
+			enableRetrieveMonsters = config.getString("Retrieve.EnableRetrieveMonsters", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerChest = config.getString("Retrieve.EnableContainerChest", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerFurnace = config.getString("Retrieve.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerDispenser = config.getString("Retrieve.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
@@ -281,6 +327,21 @@ public class PMConfiguration
 		public Boolean isRetrieveItemsEnabled()
 		{
 			return enableRetrieveItems;
+		}
+
+		public Boolean isRetrieveVehiclesEnabled()
+		{
+			return enableRetrieveVehicles;
+		}
+
+		public Boolean isRetrieveAnimalsEnabled()
+		{
+			return enableRetrieveAnimals;
+		}
+
+		public Boolean isRetrieveMonstersEnabled()
+		{
+			return enableRetrieveMonsters;
 		}
 
 		public Boolean isContainerEnabled(final Material material)

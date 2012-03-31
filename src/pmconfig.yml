@@ -20,15 +20,23 @@ Store:
     Enable: true
     EnableStoreBlocks: true
     EnableStoreItems: true
+    EnableStoreVehicles: true
+    EnableStoreAnimals: true
+    EnableStoreMonsters: true
     EnableContainerChest: true
     EnableContainerFurnace: true
     EnableContainerDispenser: true
+    MaxItemStoreDistance: 1.0
+    MaxVehicleStoreDistance: 1.25
     Blacklist:
         - 47
 Retrieve:
     Enable: true
     EnableRetrieveBlocks: true
     EnableRetrieveItems: true
+    EnableRetrieveVehicles: true
+    EnableRetrieveAnimals: true
+    EnableRetrieveMonsters: true
     EnableContainerChest: true
     EnableContainerFurnace: true
     EnableContainerDispenser: true

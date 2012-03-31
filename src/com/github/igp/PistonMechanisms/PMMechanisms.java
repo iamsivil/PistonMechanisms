@@ -4,27 +4,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.NPC;
+import org.bukkit.entity.PoweredMinecart;
+import org.bukkit.entity.StorageMinecart;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.SpawnEgg;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.igp.IGHelpers.BlockHelper;
 import com.github.igp.IGHelpers.BlockSetter;
+import com.github.igp.IGHelpers.EntitySpawner;
+import com.github.igp.IGHelpers.EntityTypeHelper;
 import com.github.igp.IGHelpers.ItemStackDropper;
 import com.github.igp.IGHelpers.MaterialHelper;
+import com.github.igp.IGHelpers.VehicleSpawner;
 
 public class PMMechanisms
 {
 	JavaPlugin plugin;
 	private final MaterialHelper materialHelper;
 	private final BlockHelper blockHelper;
+	private final EntityTypeHelper entityTypeHelper;
 	PMConfiguration config;
 
 	public PMMechanisms(final JavaPlugin plugin)
@@ -32,6 +45,7 @@ public class PMMechanisms
 		this.plugin = plugin;
 		materialHelper = new MaterialHelper();
 		blockHelper = new BlockHelper();
+		entityTypeHelper = new EntityTypeHelper();
 		config = new PMConfiguration(plugin);
 	}
 
@@ -73,8 +87,8 @@ public class PMMechanisms
 		else
 		{
 			final ItemStack drop = new ItemStack(b.getType(), 1, (short) 0, b.getData());
-			final ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
+			final ItemStackDropper dropper = new ItemStackDropper(blockHelper.getBlockCenter(b), drop);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			b.setType(Material.AIR);
 		}
 	}
@@ -91,26 +105,32 @@ public class PMMechanisms
 
 		if (!b.getType().equals(Material.AIR) && config.store.isStoreBlocksEnabled() && !config.store.isOnBlackList(b.getType()))
 		{
-			final ItemStack stack = new ItemStack(b.getType(), 1, (short) 0, b.getData());
-
-			if (container.getType().equals(Material.FURNACE) || container.getType().equals(Material.BURNING_FURNACE))
+			if (!(materialHelper.isValidRailMaterial(b.getType()) && config.store.isStoreVehiclesEnabled()))
 			{
-				final ItemStack burnstack = inv.getItem(0);
-				if (burnstack == null)
+				final ItemStack stack = new ItemStack(b.getType(), 1, (short) 0, b.getData());
+
+				if (container.getType().equals(Material.FURNACE) || container.getType().equals(Material.BURNING_FURNACE))
 				{
-					inv.setItem(0, stack);
-					b.setType(Material.AIR);
+					final ItemStack burnstack = inv.getItem(0);
+					if (burnstack == null)
+					{
+						inv.setItem(0, stack);
+						b.setType(Material.AIR);
+					}
+					else if (burnstack.getType().equals(stack.getType()) && (burnstack.getData().getData() == stack.getData().getData()) && (burnstack.getAmount() < (65 - stack.getAmount())))
+					{
+						burnstack.setAmount(burnstack.getAmount() + stack.getAmount());
+						b.setType(Material.AIR);
+					}
 				}
-				else if (burnstack.getType().equals(stack.getType()) && (burnstack.getData().getData() == stack.getData().getData()) && (burnstack.getAmount() < (65 - stack.getAmount())))
-				{
-					burnstack.setAmount(burnstack.getAmount() + stack.getAmount());
+				else if (inv.addItem(stack).size() == 0)
 					b.setType(Material.AIR);
-				}
+
+				return;
 			}
-			else if (inv.addItem(stack).size() == 0)
-				b.setType(Material.AIR);
 		}
-		else if (config.store.isStoreItemsEnabled())
+
+		if (config.store.isStoreItemsEnabled() || config.store.isStoreVehiclesEnabled())
 		{
 			final List<Location> locations = new ArrayList<Location>();
 			final List<Entity> entities = new ArrayList<Entity>();
@@ -125,30 +145,76 @@ public class PMMechanisms
 			if (locations.size() == entities.size())
 			{
 				final Location bCenter = blockHelper.getBlockCenter(b);
-				
+
 				for (int i = 0; i < locations.size(); i++)
 				{
-					if (entities.get(i) instanceof Item)
+					final Location location = locations.get(i);
+					final Entity entity = entities.get(i);
+					ItemStack stack = null;
+
+					if ((entity instanceof Item) && config.store.isStoreItemsEnabled())
 					{
-						if (locations.get(i).subtract(bCenter).lengthSquared() <= config.store.getMaxItemStoreDistanceSquared())
+						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxItemStoreDistanceSquared()))
+							continue;
+
+						stack = ((Item) entity).getItemStack();
+					}
+					else if ((entity instanceof Vehicle) && config.store.isStoreVehiclesEnabled())
+					{
+						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxItemStoreDistanceSquared()))
+							continue;
+
+						if (entity instanceof Boat)
+							stack = new ItemStack(Material.BOAT);
+						else if (entity instanceof PoweredMinecart)
 						{
-							final ItemStack stack = ((Item) entities.get(i)).getItemStack();
-
-							if (config.store.isOnBlackList(stack.getType()))
-								continue;
-
-							final HashMap<Integer, ItemStack> overflow = inv.addItem(stack);
-
-							if (overflow.isEmpty())
-								entities.get(i).remove();
-							else
+							stack = new ItemStack(Material.POWERED_MINECART);
+						}
+						else if (entity instanceof StorageMinecart)
+						{
+							stack = new ItemStack(Material.STORAGE_MINECART);
+							if (((StorageMinecart) entity).getInventory().getContents() != null)
 							{
-								if (overflow.get(0).getAmount() < stack.getAmount())
-								{
-									stack.setAmount(overflow.get(0).getAmount());
-								}
+								final ItemStackDropper dropper = new ItemStackDropper(blockHelper.getBlockCenter(b), ((StorageMinecart) entity).getInventory().getContents());
+								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 							}
 						}
+						else if (entity instanceof Minecart)
+							stack = new ItemStack(Material.MINECART);
+						else
+							continue;
+					}
+					else if ((entity instanceof Monster) && config.store.isStoreMonstersEnabled())
+					{
+						final SpawnEgg spawnEgg = new SpawnEgg();
+						spawnEgg.setSpawnedType(entity.getType());
+						stack = spawnEgg.toItemStack(1);
+						stack.setData(spawnEgg);
+					}
+					else if (((entity instanceof Animals) || (entity instanceof Creature) || (entity instanceof NPC)) && config.store.isStoreMonstersEnabled())
+					{
+						final SpawnEgg spawnEgg = new SpawnEgg();
+						spawnEgg.setSpawnedType(entity.getType());
+						stack = spawnEgg.toItemStack(1);
+						stack.setData(spawnEgg);
+					}
+					else
+						continue;
+
+					if (stack == null)
+						continue;
+
+					if (config.store.isOnBlackList(stack.getType()))
+						continue;
+
+					final HashMap<Integer, ItemStack> overflow = inv.addItem(stack);
+
+					if (overflow.isEmpty())
+						entity.remove();
+					else
+					{
+						if (overflow.get(0).getAmount() < stack.getAmount())
+							stack.setAmount(overflow.get(0).getAmount());
 					}
 				}
 			}
@@ -190,30 +256,35 @@ public class PMMechanisms
 
 		if (stack != null)
 		{
-			Boolean update = false;
-
 			if (materialHelper.isValidBlockMaterial(stack.getType()) && config.retrieve.isRetrieveBlocksEnabled())
 			{
 				final BlockSetter creator = new BlockSetter(b, stack);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, creator, 1);
-				update = true;
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, creator, 1);
+			}
+			else if (materialHelper.isValidVehicleMaterial(stack.getType()) && config.retrieve.isRetrieveVehiclesEnabled())
+			{
+				final VehicleSpawner spawner = new VehicleSpawner(blockHelper.getBlockCenter(b), stack.getType());
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, spawner, 1);
+			}
+			else if (stack.getType().equals(Material.MONSTER_EGG) && ((config.retrieve.isRetrieveAnimalsEnabled() && entityTypeHelper.isAnimalEntityType(((SpawnEgg) stack.getData()).getSpawnedType())) || (config.retrieve.isRetrieveMonstersEnabled() && entityTypeHelper.isMonsterEntityType(((SpawnEgg) stack.getData()).getSpawnedType()))))
+			{
+				final EntitySpawner spawner = new EntitySpawner(blockHelper.getBlockCenter(b), ((SpawnEgg) stack.getData()).getSpawnedType());
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, spawner, 1);
 			}
 			else if (config.retrieve.isRetrieveItemsEnabled())
 			{
 				final ItemStack drop = new ItemStack(stack);
 				drop.setAmount(1);
-				final ItemStackDropper dropper = new ItemStackDropper(b.getWorld(), b.getLocation().add(.5, .5, .5), drop);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
-				update = true;
+				final ItemStackDropper dropper = new ItemStackDropper(blockHelper.getBlockCenter(b), drop);
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			}
+			else
+				return;
 
-			if (update)
-			{
-				if (stack.getAmount() > 1)
-					stack.setAmount(stack.getAmount() - 1);
-				else
-					inv.clear(loc);
-			}
+			if (stack.getAmount() > 1)
+				stack.setAmount(stack.getAmount() - 1);
+			else
+				inv.clear(loc);
 		}
 	}
 }
