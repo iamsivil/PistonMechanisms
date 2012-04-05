@@ -224,6 +224,9 @@ public class PMMechanisms
 					}
 					else if ((entity instanceof Monster) && config.store.isStoreMonstersEnabled())
 					{
+						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxCreatureStoreDistanceSquared()))
+							continue;
+						
 						final SpawnEgg spawnEgg = new SpawnEgg();
 						spawnEgg.setSpawnedType(entity.getType());
 						stack = spawnEgg.toItemStack(1);
@@ -231,6 +234,9 @@ public class PMMechanisms
 					}
 					else if (((entity instanceof Animals) || (entity instanceof Creature) || (entity instanceof NPC)) && config.store.isStoreMonstersEnabled())
 					{
+						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxCreatureStoreDistanceSquared()))
+							continue;
+						
 						final SpawnEgg spawnEgg = new SpawnEgg();
 						spawnEgg.setSpawnedType(entity.getType());
 						stack = spawnEgg.toItemStack(1);

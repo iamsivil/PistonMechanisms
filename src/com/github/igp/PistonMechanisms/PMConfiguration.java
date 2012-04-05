@@ -1,10 +1,13 @@
 package com.github.igp.PistonMechanisms;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,10 +15,9 @@ import com.github.igp.IGHelpers.MaterialHelper;
 
 public class PMConfiguration
 {
-	@SuppressWarnings("unused")
 	private final JavaPlugin plugin;
 	private final MaterialHelper materialHelper;
-	private final FileConfiguration config;
+	private FileConfiguration config;
 	public Bake bake;
 	public Wash wash;
 	public Crush crush;
@@ -27,22 +29,48 @@ public class PMConfiguration
 		this.plugin = plugin;
 		materialHelper = new MaterialHelper();
 
+		load();
+	}
+	
+	private void load()
+	{
 		final File configFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
 		if ((configFile == null) || !configFile.exists())
 		{
 			plugin.getLogger().info("Configuration file not found: saving default");
-			plugin.saveResource("pmconfig.yml", false);
+			plugin.saveResource("pmconfig.yml", true);
 			final File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "pmconfig.yml");
 			f.renameTo(configFile);
 		}
-
-		config = plugin.getConfig();
-
-		bake = new Bake();
-		wash = new Wash();
-		crush = new Crush();
-		store = new Store();
-		retrieve = new Retrieve();
+		
+		try
+		{
+			plugin.getConfig().load(plugin.getDataFolder() + File.separator + "config.yml");
+			config = plugin.getConfig();
+			
+			bake = new Bake();
+			wash = new Wash();
+			crush = new Crush();
+			store = new Store();
+			retrieve = new Retrieve();
+		}
+		catch (FileNotFoundException e)
+		{
+			plugin.getLogger().severe("Configuration file not found, please restart to regenerate it");
+		}
+		catch (IOException e)
+		{
+			plugin.getLogger().severe("Error reading the configuration file, do you have it open in another program?");
+		}
+		catch (InvalidConfigurationException e)
+		{
+			plugin.getLogger().severe("Invalid configuration file, please delete it and restart to regenerate it");
+		}
+	}
+	
+	public void reload()
+	{
+		load();
 	}
 
 	public class Bake extends Base
@@ -159,6 +187,8 @@ public class PMConfiguration
 		private Double maxItemStoreDistanceSquared;
 		private Double maxVehicleStoreDistance;
 		private Double maxVehicleStoreDistanceSquared;
+		private Double maxCreatureStoreDistance;
+		private Double maxCreatureStoreDistanceSquared;
 
 		private List<Material> blackList;
 
@@ -192,6 +222,13 @@ public class PMConfiguration
 			else if (maxVehicleStoreDistance > 4.5)
 				maxVehicleStoreDistance = 4.5;
 			maxVehicleStoreDistanceSquared = Math.pow(maxVehicleStoreDistance, 2.0);
+			
+			maxCreatureStoreDistance = config.getDouble("Store.MaxCreatureStoreDistance", 1.25);
+			if (maxCreatureStoreDistance < 0.5)
+				maxCreatureStoreDistance = 0.5;
+			else if (maxCreatureStoreDistance > 4.5)
+				maxCreatureStoreDistance = 4.5;
+			maxCreatureStoreDistanceSquared = Math.pow(maxCreatureStoreDistance, 2.0);
 
 			blackList = new ArrayList<Material>();
 
@@ -224,6 +261,16 @@ public class PMConfiguration
 		public Double getMaxVehicleStoreDistanceSquared()
 		{
 			return maxVehicleStoreDistanceSquared;
+		}
+		
+		public Double getMaxCreatureStoreDistance()
+		{
+			return maxCreatureStoreDistance;
+		}
+
+		public Double getMaxCreatureStoreDistanceSquared()
+		{
+			return maxCreatureStoreDistanceSquared;
 		}
 
 		public Boolean isStoreBlocksEnabled()

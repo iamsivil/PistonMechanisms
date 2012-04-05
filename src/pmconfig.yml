@@ -28,6 +28,7 @@ Store:
     EnableContainerDispenser: true
     MaxItemStoreDistance: 1.1
     MaxVehicleStoreDistance: 2.25
+    MaxCreatureStoreDistance: 1.25
     Blacklist:
         - 47
 Retrieve:
