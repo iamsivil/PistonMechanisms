@@ -130,6 +130,30 @@ public class PMMechanisms
 			b.setType(Material.AIR);
 		}
 	}
+	
+	public void compact(final List<Block> blocks)
+	{
+		if (!config.compact.isEnabled())
+			return;
+		
+		if (blocks.size() != 3)
+			return;
+		
+		Material mat = config.compact.getProductMaterial(blocks);
+		
+		if (mat == null)
+			return;
+		
+		Block target = blocks.get((int) Math.floor(((float)blocks.size()) / 2.0));
+		
+		if (materialHelper.isValidBlockMaterial(mat))
+		{
+			for (Block b : blocks)
+				b.setType(Material.AIR);
+			
+			target.setType(mat);
+		}
+	}
 
 	public void store(final Block b, final Block container)
 	{
@@ -140,7 +164,7 @@ public class PMMechanisms
 			return;
 
 		final Inventory inv = ((InventoryHolder) container.getState()).getInventory();
-
+		
 		if (!b.getType().equals(Material.AIR) && config.store.isStoreBlocksEnabled() && !config.store.isOnBlackList(b.getType()))
 		{
 			if (!(materialHelper.isValidRailMaterial(b.getType()) && config.store.isStoreVehiclesEnabled()))
@@ -163,13 +187,13 @@ public class PMMechanisms
 				}
 				else if (inv.addItem(stack).size() == 0)
 					b.setType(Material.AIR);
-
+				
 				return;
 			}
 		}
-
-		if (config.store.isStoreItemsEnabled() || config.store.isStoreVehiclesEnabled())
-		{
+		
+		if (config.store.isStoreEntitiesEnabled())
+		{			
 			final List<Location> locations = new ArrayList<Location>();
 			final List<Entity> entities = new ArrayList<Entity>();
 
@@ -199,7 +223,7 @@ public class PMMechanisms
 					}
 					else if ((entity instanceof Vehicle) && config.store.isStoreVehiclesEnabled())
 					{
-						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxItemStoreDistanceSquared()))
+						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxVehicleStoreDistanceSquared()))
 							continue;
 
 						if (entity instanceof Boat)

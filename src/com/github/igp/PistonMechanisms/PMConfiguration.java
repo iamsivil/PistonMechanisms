@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +25,7 @@ public class PMConfiguration
 	public Crush crush;
 	public Store store;
 	public Retrieve retrieve;
+	public Compact compact;
 
 	public PMConfiguration(final JavaPlugin plugin)
 	{
@@ -51,6 +54,7 @@ public class PMConfiguration
 			bake = new Bake();
 			wash = new Wash();
 			crush = new Crush();
+			compact = new Compact();
 			store = new Store();
 			retrieve = new Retrieve();
 		}
@@ -92,12 +96,13 @@ public class PMConfiguration
 				if (s.contains("|") && (s.split("\\|").length > 1))
 				{
 					final String i = s.split("\\|")[0].trim().toUpperCase();
-					final String p = s.split("\\|")[1].trim().toUpperCase();
-
 					final Material initial = materialHelper.getMaterialFromString(i);
+					if (initial == null)
+						continue;
+					
+					final String p = s.split("\\|")[1].trim().toUpperCase();
 					final Material product = materialHelper.getMaterialFromString(p);
-
-					if ((initial == null) || (product == null))
+					if (product == null)
 						continue;
 
 					final ArrayList<Material> recipe = new ArrayList<Material>(2);
@@ -154,6 +159,9 @@ public class PMConfiguration
 
 				blackList.add(material);
 			}
+			
+			blackList.add(Material.PISTON_BASE);
+			blackList.add(Material.PISTON_STICKY_BASE);
 		}
 
 		public Boolean breakNaturally()
@@ -172,6 +180,96 @@ public class PMConfiguration
 			return false;
 		}
 	}
+	
+	public class Compact extends Base
+	{
+		private List<ArrayList<Material>> recipes;
+		private List<Material> products;
+		
+		public Compact()
+		{
+			load();
+		}
+		
+		private void load()
+		{
+			super.enabled = config.getString("Compact.Enable", "true").equalsIgnoreCase("true") ? true : false;
+			recipes = new ArrayList<ArrayList<Material>>();
+			products = new ArrayList<Material>();
+			
+			for (final String s : config.getStringList("Compact.Recipes"))
+			{
+				if (s.contains("=") && (s.split("\\=").length > 1))
+				{					
+					final String p = s.split("\\=")[1].trim().toUpperCase();
+					final Material product = materialHelper.getMaterialFromString(p);
+					if (product == null)
+						continue;
+					
+					ArrayList<Material> materials = null;
+					String i = s.split("\\=")[0].trim().toUpperCase();
+					if (i.contains("|") && (i.split("\\|").length > 1))
+					{
+						materials = new ArrayList<Material>();
+						for (final String m : i.split("\\|"))
+						{							
+							final Material material = materialHelper.getMaterialFromString(m.trim().toUpperCase());
+							
+							if (material == null)
+								continue;
+							
+							materials.add(material);
+						}
+					}
+					
+					if ((materials == null) || (materials.size() != 3))
+						continue;
+					
+					recipes.add(materials);
+					products.add(product);
+				}
+			}
+		}
+		
+		public Material getProductMaterial(List<Block> blocks)
+		{
+			if (blocks.size() != 3)
+				return null;
+			
+			List<Material> materials = new ArrayList<Material>();
+			for (Block b : blocks)
+				materials.add(b.getType());
+			
+			for (int i = 0; i < recipes.size(); i++)
+			{
+				List<Material> recipe = recipes.get(i);
+				
+				boolean toContinue = false;
+				
+				List<Material> checked = new ArrayList<Material>();
+				for (Material material : recipe)
+				{
+					if (checked.contains(material))
+						continue;
+					
+					if (Collections.frequency(recipe, material) == Collections.frequency(materials, material))
+						checked.add(material);
+					else
+					{
+						toContinue = true;
+						break;
+					}
+				}
+				
+				if (toContinue)
+					continue;
+				
+				return products.get(i);
+			}
+			
+			return null;
+		}
+	}
 
 	public class Store extends Base
 	{
@@ -180,6 +278,7 @@ public class PMConfiguration
 		private Boolean enableStoreVehicles;
 		private Boolean enableStoreAnimals;
 		private Boolean enableStoreMonsters;
+		private Boolean enableStoreEntities;
 		private Boolean enableContainerChest;
 		private Boolean enableContainerFurnace;
 		private Boolean enableContainerDispenser;
@@ -209,6 +308,11 @@ public class PMConfiguration
 			enableContainerFurnace = config.getString("Store.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
 			enableContainerDispenser = config.getString("Store.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
 
+			if (enableStoreItems || enableStoreVehicles || enableStoreAnimals || enableStoreMonsters)
+				enableStoreEntities = true;
+			else
+				enableStoreEntities = false;
+			
 			maxItemStoreDistance = config.getDouble("Store.MaxItemStoreDistance", 1.25);
 			if (maxItemStoreDistance < 0.5)
 				maxItemStoreDistance = 0.5;
@@ -296,6 +400,11 @@ public class PMConfiguration
 		public Boolean isStoreMonstersEnabled()
 		{
 			return enableStoreMonsters;
+		}
+		
+		public Boolean isStoreEntitiesEnabled()
+		{
+			return enableStoreEntities;
 		}
 
 		public Boolean isContainerEnabled(final Material material)

@@ -16,6 +16,11 @@ Crush:
     BreakNaturally: true
     Blacklist:
         - 47
+Compact:
+    Enable: true
+    Recipes:
+        - Sand | Sand | Sand = Sandstone
+        - dirt | dirt | dirt = Sand
 Store:
     Enable: true
     EnableStoreBlocks: true

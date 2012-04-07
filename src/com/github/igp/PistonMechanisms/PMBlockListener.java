@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.igp.IGHelpers.BlockFaceHelper;
 import com.github.igp.IGHelpers.BlockHelper;
 import com.github.igp.IGHelpers.MaterialHelper;
 
@@ -23,6 +24,7 @@ public class PMBlockListener implements Listener
 	private final JavaPlugin plugin;
 	private final PMMechanisms mechs;
 	private final BlockHelper blockHelper;
+	private final BlockFaceHelper blockFaceHelper;
 	private final MaterialHelper materialHelper;
 
 	public PMBlockListener(final JavaPlugin plugin)
@@ -31,6 +33,7 @@ public class PMBlockListener implements Listener
 		mechs = new PMMechanisms(plugin);
 		materialHelper = new MaterialHelper();
 		blockHelper = new BlockHelper();
+		blockFaceHelper = new BlockFaceHelper();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -55,6 +58,26 @@ public class PMBlockListener implements Listener
 						else
 							blocks.add(n);
 					}
+					
+					if (blocks.size() == 4)
+					{
+						Block check = b.getRelative(face, 4);
+						if (check.getType().equals(Material.PISTON_BASE) || check.getType().equals(Material.PISTON_STICKY_BASE))
+						{
+							final BlockFace f = ((PistonBaseMaterial) check.getState().getData()).getFacing();
+							if (blockFaceHelper.getOppositeFace(face) == f)
+							{
+								if (check.isBlockPowered() || check.isBlockIndirectlyPowered())
+								{
+									if (blockHelper.isBlockPowered(check, f))
+									{
+										mechs.compact(blocks.subList(0, 3));
+										return;
+									}
+								}
+							}
+						}
+					}
 
 					if (blocks.size() < 12)
 					{
@@ -70,7 +93,7 @@ public class PMBlockListener implements Listener
 								blocks.add(last);
 						}
 					}
-
+					
 					for (int i = (blocks.size() - 1); i > -1; i--)
 					{
 						final Block n = blocks.get(i);
