@@ -144,14 +144,12 @@ public class PMMechanisms
 		if (mat == null)
 			return;
 		
-		Block target = blocks.get((int) Math.floor(((float)blocks.size()) / 2.0));
-		
 		if (materialHelper.isValidBlockMaterial(mat))
 		{
 			for (Block b : blocks)
 				b.setType(Material.AIR);
 			
-			target.setType(mat);
+			blocks.get(1).setType(mat);
 		}
 	}
 
