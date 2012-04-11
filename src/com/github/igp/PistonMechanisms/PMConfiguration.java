@@ -13,7 +13,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.igp.IGHelpers.MaterialHelper;
+import com.github.igp.IGHelpers.Helpers.MaterialHelper;
 
 public class PMConfiguration
 {
