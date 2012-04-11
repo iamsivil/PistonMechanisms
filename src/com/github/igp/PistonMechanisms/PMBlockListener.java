@@ -23,17 +23,11 @@ public class PMBlockListener implements Listener
 	@SuppressWarnings("unused")
 	private final JavaPlugin plugin;
 	private final PMMechanisms mechs;
-	private final BlockHelper blockHelper;
-	private final BlockFaceHelper blockFaceHelper;
-	private final MaterialHelper materialHelper;
 
 	public PMBlockListener(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
 		mechs = new PMMechanisms(plugin);
-		materialHelper = new MaterialHelper();
-		blockHelper = new BlockHelper();
-		blockFaceHelper = new BlockFaceHelper();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -46,7 +40,7 @@ public class PMBlockListener implements Listener
 
 			if (b.isBlockPowered() || b.isBlockIndirectlyPowered())
 			{
-				if (blockHelper.isBlockPowered(b, face))
+				if (BlockHelper.isBlockPowered(b, face))
 				{
 					final List<Block> blocks = new ArrayList<Block>(12);
 
@@ -65,11 +59,11 @@ public class PMBlockListener implements Listener
 						if (check.getType().equals(Material.PISTON_BASE) || check.getType().equals(Material.PISTON_STICKY_BASE))
 						{
 							final BlockFace f = ((PistonBaseMaterial) check.getState().getData()).getFacing();
-							if (blockFaceHelper.getOppositeFace(face) == f)
+							if (BlockFaceHelper.getOppositeFace(face) == f)
 							{
 								if (check.isBlockPowered() || check.isBlockIndirectlyPowered())
 								{
-									if (blockHelper.isBlockPowered(check, f))
+									if (BlockHelper.isBlockPowered(check, f))
 									{
 										mechs.compact(blocks.subList(0, 3));
 										return;
@@ -83,13 +77,13 @@ public class PMBlockListener implements Listener
 					{
 						if (blocks.isEmpty())
 						{
-							if (b.getRelative(face).getType().equals(Material.AIR) && materialHelper.isValidContainerMaterial((b.getRelative(face, 2).getType())))
+							if (b.getRelative(face).getType().equals(Material.AIR) && MaterialHelper.isValidContainerMaterial((b.getRelative(face, 2).getType())))
 								blocks.add(b.getRelative(face));
 						}
 						else
 						{
 							final Block last = blocks.get(blocks.size() - 1).getRelative(face);
-							if (last.getType().equals(Material.AIR) && materialHelper.isValidContainerMaterial(last.getRelative(face).getType()))
+							if (last.getType().equals(Material.AIR) && MaterialHelper.isValidContainerMaterial(last.getRelative(face).getType()))
 								blocks.add(last);
 						}
 					}
@@ -100,7 +94,7 @@ public class PMBlockListener implements Listener
 						final Block next = n.getRelative(face);
 						final Block nextdown = next.getRelative(BlockFace.DOWN);
 
-						if (materialHelper.isValidContainerMaterial(next.getType()))
+						if (MaterialHelper.isValidContainerMaterial(next.getType()))
 							mechs.store(n, next);
 						else if (next.getType().equals(Material.OBSIDIAN))
 							mechs.crush(n);
@@ -127,7 +121,7 @@ public class PMBlockListener implements Listener
 			final Block ndown = n.getRelative(BlockFace.DOWN);
 
 			final Material nmat;
-			if (materialHelper.isValidContainerMaterial(next.getType()))
+			if (MaterialHelper.isValidContainerMaterial(next.getType()))
 				nmat = mechs.retrieve(next, n);
 			else
 				nmat = next.getType();

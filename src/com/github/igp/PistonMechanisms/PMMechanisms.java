@@ -35,17 +35,11 @@ import com.github.igp.IGHelpers.VehicleSpawner;
 public class PMMechanisms
 {
 	JavaPlugin plugin;
-	private final MaterialHelper materialHelper;
-	private final BlockHelper blockHelper;
-	private final EntityTypeHelper entityTypeHelper;
 	PMConfiguration config;
 
 	public PMMechanisms(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
-		materialHelper = new MaterialHelper();
-		blockHelper = new BlockHelper();
-		entityTypeHelper = new EntityTypeHelper();
 		config = new PMConfiguration(plugin);
 	}
 
@@ -56,7 +50,7 @@ public class PMMechanisms
 
 		final Material mat = config.bake.getProductMaterial(b.getType());
 
-		if ((mat != null) && materialHelper.isValidBlockMaterial(mat))
+		if ((mat != null) && MaterialHelper.isValidBlockMaterial(mat))
 			b.setType(mat);
 	}
 
@@ -72,7 +66,7 @@ public class PMMechanisms
 
 		final Material mat = config.bake.getProductMaterial(material);
 
-		if ((mat != null) && materialHelper.isValidBlockMaterial(material))
+		if ((mat != null) && MaterialHelper.isValidBlockMaterial(material))
 		{
 			final BlockSetter creator = new BlockSetter(b, mat);
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, creator, delay);
@@ -86,7 +80,7 @@ public class PMMechanisms
 
 		final Material mat = config.wash.getProductMaterial(b.getType());
 
-		if ((mat != null) && materialHelper.isValidBlockMaterial(mat))
+		if ((mat != null) && MaterialHelper.isValidBlockMaterial(mat))
 			b.setType(mat);
 	}
 
@@ -102,7 +96,7 @@ public class PMMechanisms
 
 		final Material mat = config.wash.getProductMaterial(material);
 
-		if ((mat != null) && materialHelper.isValidBlockMaterial(material))
+		if ((mat != null) && MaterialHelper.isValidBlockMaterial(material))
 		{
 			final BlockSetter creator = new BlockSetter(b, mat);
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, creator, delay);
@@ -125,7 +119,7 @@ public class PMMechanisms
 		else
 		{
 			final ItemStack drop = new ItemStack(b.getType(), 1, (short) 0, b.getData());
-			final ItemStackDropper dropper = new ItemStackDropper(blockHelper.getBlockCenter(b), drop);
+			final ItemStackDropper dropper = new ItemStackDropper(BlockHelper.getBlockCenter(b), drop);
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			b.setType(Material.AIR);
 		}
@@ -144,7 +138,7 @@ public class PMMechanisms
 		if (mat == null)
 			return;
 		
-		if (materialHelper.isValidBlockMaterial(mat))
+		if (MaterialHelper.isValidBlockMaterial(mat))
 		{
 			for (Block b : blocks)
 				b.setType(Material.AIR);
@@ -165,7 +159,7 @@ public class PMMechanisms
 		
 		if (!b.getType().equals(Material.AIR) && config.store.isStoreBlocksEnabled() && !config.store.isOnBlackList(b.getType()))
 		{
-			if (!(materialHelper.isValidRailMaterial(b.getType()) && config.store.isStoreVehiclesEnabled()))
+			if (!(MaterialHelper.isValidRailMaterial(b.getType()) && config.store.isStoreVehiclesEnabled()))
 			{
 				final ItemStack stack = new ItemStack(b.getType(), 1, (short) 0, b.getData());
 
@@ -204,7 +198,7 @@ public class PMMechanisms
 
 			if (locations.size() == entities.size())
 			{
-				final Location bCenter = blockHelper.getBlockCenter(b);
+				final Location bCenter = BlockHelper.getBlockCenter(b);
 
 				for (int i = 0; i < locations.size(); i++)
 				{
@@ -235,7 +229,7 @@ public class PMMechanisms
 							stack = new ItemStack(Material.STORAGE_MINECART);
 							if (((StorageMinecart) entity).getInventory().getContents() != null)
 							{
-								final ItemStackDropper dropper = new ItemStackDropper(blockHelper.getBlockCenter(b), ((StorageMinecart) entity).getInventory().getContents());
+								final ItemStackDropper dropper = new ItemStackDropper(BlockHelper.getBlockCenter(b), ((StorageMinecart) entity).getInventory().getContents());
 								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 							}
 						}
@@ -322,26 +316,26 @@ public class PMMechanisms
 
 		if (stack != null)
 		{
-			if (materialHelper.isValidBlockMaterial(stack.getType()) && config.retrieve.isRetrieveBlocksEnabled())
+			if (MaterialHelper.isValidBlockMaterial(stack.getType()) && config.retrieve.isRetrieveBlocksEnabled())
 			{
 				final BlockSetter creator = new BlockSetter(b, stack);
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, creator, 1);
 			}
-			else if (materialHelper.isValidVehicleMaterial(stack.getType()) && config.retrieve.isRetrieveVehiclesEnabled())
+			else if (MaterialHelper.isValidVehicleMaterial(stack.getType()) && config.retrieve.isRetrieveVehiclesEnabled())
 			{
-				final VehicleSpawner spawner = new VehicleSpawner(blockHelper.getBlockCenter(b), stack.getType());
+				final VehicleSpawner spawner = new VehicleSpawner(BlockHelper.getBlockCenter(b), stack.getType());
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, spawner, 1);
 			}
-			else if (stack.getType().equals(Material.MONSTER_EGG) && ((config.retrieve.isRetrieveAnimalsEnabled() && entityTypeHelper.isAnimalEntityType(((SpawnEgg) stack.getData()).getSpawnedType())) || (config.retrieve.isRetrieveMonstersEnabled() && entityTypeHelper.isMonsterEntityType(((SpawnEgg) stack.getData()).getSpawnedType()))))
+			else if (stack.getType().equals(Material.MONSTER_EGG) && ((config.retrieve.isRetrieveAnimalsEnabled() && EntityTypeHelper.isAnimalEntityType(((SpawnEgg) stack.getData()).getSpawnedType())) || (config.retrieve.isRetrieveMonstersEnabled() && EntityTypeHelper.isMonsterEntityType(((SpawnEgg) stack.getData()).getSpawnedType()))))
 			{
-				final EntitySpawner spawner = new EntitySpawner(blockHelper.getBlockCenter(b), ((SpawnEgg) stack.getData()).getSpawnedType());
+				final EntitySpawner spawner = new EntitySpawner(BlockHelper.getBlockCenter(b), ((SpawnEgg) stack.getData()).getSpawnedType());
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, spawner, 1);
 			}
 			else if (config.retrieve.isRetrieveItemsEnabled())
 			{
 				final ItemStack drop = new ItemStack(stack);
 				drop.setAmount(1);
-				final ItemStackDropper dropper = new ItemStackDropper(blockHelper.getBlockCenter(b), drop);
+				final ItemStackDropper dropper = new ItemStackDropper(BlockHelper.getBlockCenter(b), drop);
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, dropper, 1);
 			}
 			else

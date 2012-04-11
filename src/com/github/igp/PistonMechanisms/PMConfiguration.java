@@ -18,7 +18,6 @@ import com.github.igp.IGHelpers.MaterialHelper;
 public class PMConfiguration
 {
 	private final JavaPlugin plugin;
-	private final MaterialHelper materialHelper;
 	private FileConfiguration config;
 	public Bake bake;
 	public Wash wash;
@@ -30,7 +29,6 @@ public class PMConfiguration
 	public PMConfiguration(final JavaPlugin plugin)
 	{
 		this.plugin = plugin;
-		materialHelper = new MaterialHelper();
 
 		load();
 	}
@@ -96,12 +94,12 @@ public class PMConfiguration
 				if (s.contains("|") && (s.split("\\|").length > 1))
 				{
 					final String i = s.split("\\|")[0].trim().toUpperCase();
-					final Material initial = materialHelper.getMaterialFromString(i);
+					final Material initial = MaterialHelper.getMaterialFromString(i);
 					if (initial == null)
 						continue;
 					
 					final String p = s.split("\\|")[1].trim().toUpperCase();
-					final Material product = materialHelper.getMaterialFromString(p);
+					final Material product = MaterialHelper.getMaterialFromString(p);
 					if (product == null)
 						continue;
 
@@ -152,7 +150,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Crush.Blacklist"))
 			{
-				final Material material = materialHelper.getMaterialFromString(s);
+				final Material material = MaterialHelper.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -202,7 +200,7 @@ public class PMConfiguration
 				if (s.contains("=") && (s.split("\\=").length > 1))
 				{					
 					final String p = s.split("\\=")[1].trim().toUpperCase();
-					final Material product = materialHelper.getMaterialFromString(p);
+					final Material product = MaterialHelper.getMaterialFromString(p);
 					if (product == null)
 						continue;
 					
@@ -213,7 +211,7 @@ public class PMConfiguration
 						materials = new ArrayList<Material>();
 						for (final String m : i.split("\\|"))
 						{							
-							final Material material = materialHelper.getMaterialFromString(m.trim().toUpperCase());
+							final Material material = MaterialHelper.getMaterialFromString(m.trim().toUpperCase());
 							
 							if (material == null)
 								continue;
@@ -338,7 +336,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Store.Blacklist"))
 			{
-				final Material material = materialHelper.getMaterialFromString(s);
+				final Material material = MaterialHelper.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
@@ -466,7 +464,7 @@ public class PMConfiguration
 
 			for (final String s : config.getStringList("Retrieve.Blacklist"))
 			{
-				final Material material = materialHelper.getMaterialFromString(s);
+				final Material material = MaterialHelper.getMaterialFromString(s);
 
 				if (material == null)
 					continue;
