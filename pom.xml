@@ -58,7 +58,7 @@
   	</dependency>
   	<dependency>
   		<groupId>com.github.igp</groupId>
-  		<artifactId>IGHelpers</artifactId>
+  		<artifactId>IGLib</artifactId>
   		<version>0.2-SNAPSHOT</version>
   	</dependency>
   </dependencies>

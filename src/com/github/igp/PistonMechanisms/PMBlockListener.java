@@ -14,9 +14,9 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.igp.IGHelpers.Helpers.BlockFaceHelper;
-import com.github.igp.IGHelpers.Helpers.BlockHelper;
-import com.github.igp.IGHelpers.Helpers.MaterialHelper;
+import com.github.igp.IGLib.Helpers.BlockFaceHelper;
+import com.github.igp.IGLib.Helpers.BlockHelper;
+import com.github.igp.IGLib.Helpers.MaterialHelper;
 
 public class PMBlockListener implements Listener
 {

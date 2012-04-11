@@ -24,13 +24,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.SpawnEgg;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.igp.IGHelpers.Helpers.BlockHelper;
-import com.github.igp.IGHelpers.Helpers.EntityTypeHelper;
-import com.github.igp.IGHelpers.Helpers.MaterialHelper;
-import com.github.igp.IGHelpers.Runnables.BlockSetter;
-import com.github.igp.IGHelpers.Runnables.EntitySpawner;
-import com.github.igp.IGHelpers.Runnables.ItemStackDropper;
-import com.github.igp.IGHelpers.Runnables.VehicleSpawner;
+import com.github.igp.IGLib.Helpers.BlockHelper;
+import com.github.igp.IGLib.Helpers.EntityTypeHelper;
+import com.github.igp.IGLib.Helpers.MaterialHelper;
+import com.github.igp.IGLib.Runnables.BlockSetter;
+import com.github.igp.IGLib.Runnables.EntitySpawner;
+import com.github.igp.IGLib.Runnables.ItemStackDropper;
+import com.github.igp.IGLib.Runnables.VehicleSpawner;
 
 public class PMMechanisms
 {
