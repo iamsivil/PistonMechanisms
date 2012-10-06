@@ -1,60 +1,31 @@
-# Compiled source #
-###################
-bin
-lib
-out
-target
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
+# Eclipse stuff
+/.classpath
+/.project
+/.settings
 
-# Git #
-#######
-.git
+# netbeans
+/nbproject
 
-# Packages #
-############
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
+# we use maven!
+/build.xml
 
-# Logs and databases #
-######################
-*.log
-*.sql
-*.sqlite
+# maven
+/target
 
-# OS generated files #
-######################
-.DS_Store
-ehthumbs.db
-Icon?
-Thumbs.db
+# vim
+.*.sw[a-p]
 
-# Project files #
-#################
-.classpath
-.externalToolBuilders
-.project
-.settings
-MANIFEST.MF
+# various other potential build files
+/build
+/bin
+/dist
+/manifest.mf
 
-# Netbeans files #
-##################
-build
-dist
-nbproject
-build.xml
+# Mac filesystem dust
+/.DS_Store
 
-# IntelliJ IDEA files #
-#######################
-.idea
+# intellij
 *.iml
+*.ipr
+*.iws
+.idea/
