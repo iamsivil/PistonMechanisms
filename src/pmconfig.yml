@@ -25,9 +25,7 @@ Store:
     Enable: true
     EnableStoreBlocks: true
     EnableStoreItems: true
-    EnableStoreVehicles: true
-    EnableStoreAnimals: true
-    EnableStoreMonsters: true
+    EnableStoreNPCs: true
     EnableContainerChest: true
     EnableContainerFurnace: true
     EnableContainerDispenser: true
@@ -41,8 +39,7 @@ Retrieve:
     EnableRetrieveBlocks: true
     EnableRetrieveItems: true
     EnableRetrieveVehicles: true
-    EnableRetrieveAnimals: true
-    EnableRetrieveMonsters: true
+    EnableRetrieveNPCs: true
     EnableContainerChest: true
     EnableContainerFurnace: true
     EnableContainerDispenser: true

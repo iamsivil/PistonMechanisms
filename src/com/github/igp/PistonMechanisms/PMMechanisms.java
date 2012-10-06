@@ -7,14 +7,10 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.Boat;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.NPC;
 import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.entity.Vehicle;
@@ -238,17 +234,7 @@ public class PMMechanisms
 						else
 							continue;
 					}
-					else if ((entity instanceof Monster) && config.store.isStoreMonstersEnabled())
-					{
-						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxCreatureStoreDistanceSquared()))
-							continue;
-						
-						final SpawnEgg spawnEgg = new SpawnEgg();
-						spawnEgg.setSpawnedType(entity.getType());
-						stack = spawnEgg.toItemStack(1);
-						stack.setData(spawnEgg);
-					}
-					else if (((entity instanceof Animals) || (entity instanceof Creature) || (entity instanceof NPC)) && config.store.isStoreMonstersEnabled())
+					else if (EntityTypeHelper.hasSpawnEgg(entity.getType()) && config.store.isStoreNPCsEnabled())
 					{
 						if (!(location.subtract(bCenter).lengthSquared() <= config.store.getMaxCreatureStoreDistanceSquared()))
 							continue;
@@ -297,7 +283,10 @@ public class PMMechanisms
 		{
 			loc = 2;
 			if ((inv.getItem(loc) != null) && (inv.getItem(loc).getTypeId() != 0) && (inv.getItem(loc).getAmount() > 0))
-				stack = inv.getItem(loc);
+			{
+				if (!config.retrieve.isOnBlackList(inv.getItem(loc).getType()))
+					stack = inv.getItem(loc);
+			}
 		}
 		else
 		{
@@ -326,7 +315,7 @@ public class PMMechanisms
 				final VehicleSpawner spawner = new VehicleSpawner(BlockHelper.getBlockCenter(b), stack.getType());
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, spawner, 1);
 			}
-			else if (stack.getType().equals(Material.MONSTER_EGG) && ((config.retrieve.isRetrieveAnimalsEnabled() && EntityTypeHelper.isAnimalEntityType(((SpawnEgg) stack.getData()).getSpawnedType())) || (config.retrieve.isRetrieveMonstersEnabled() && EntityTypeHelper.isMonsterEntityType(((SpawnEgg) stack.getData()).getSpawnedType()))))
+			else if (stack.getType().equals(Material.MONSTER_EGG) && config.retrieve.isRetrieveNPCsEnabled())
 			{
 				final EntitySpawner spawner = new EntitySpawner(BlockHelper.getBlockCenter(b), ((SpawnEgg) stack.getData()).getSpawnedType());
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, spawner, 1);
