@@ -28,10 +28,11 @@ import com.github.igp.IGLib.Runnables.EntitySpawner;
 import com.github.igp.IGLib.Runnables.ItemStackDropper;
 import com.github.igp.IGLib.Runnables.VehicleSpawner;
 
-public class PMMechanisms
+@SuppressWarnings("UnusedDeclaration")
+class PMMechanisms
 {
-	JavaPlugin plugin;
-	PMConfiguration config;
+	final JavaPlugin plugin;
+	private final PMConfiguration config;
 
 	public PMMechanisms(final JavaPlugin plugin)
 	{
@@ -200,7 +201,7 @@ public class PMMechanisms
 				{
 					final Location location = locations.get(i);
 					final Entity entity = entities.get(i);
-					ItemStack stack = null;
+					ItemStack stack;
 
 					if ((entity instanceof Item) && config.store.isStoreItemsEnabled())
 					{

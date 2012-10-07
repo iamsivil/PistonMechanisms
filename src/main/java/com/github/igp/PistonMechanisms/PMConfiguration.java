@@ -33,6 +33,7 @@ public class PMConfiguration
 		load();
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	private void load()
 	{
 		final File configFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
@@ -41,7 +42,8 @@ public class PMConfiguration
 			plugin.getLogger().info("Configuration file not found: saving default");
 			plugin.saveResource("pmconfig.yml", true);
 			final File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "pmconfig.yml");
-			f.renameTo(configFile);
+			if (!f.renameTo(configFile))
+				plugin.getLogger().warning("Unable to rename configuration file: please manually rename pmconfig.yml to config.yml and restart the server");
 		}
 		
 		try
@@ -69,11 +71,6 @@ public class PMConfiguration
 			plugin.getLogger().severe("Invalid configuration file, please delete it and restart to regenerate it");
 		}
 	}
-	
-	public void reload()
-	{
-		load();
-	}
 
 	public class Bake extends Base
 	{
@@ -86,7 +83,7 @@ public class PMConfiguration
 
 		private void load(final String base)
 		{
-			super.enabled = config.getString(base + ".Enable", "true").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString(base + ".Enable", "true").equalsIgnoreCase("true");
 			recipes = new ArrayList<ArrayList<Material>>();
 
 			for (final String s : config.getStringList(base + ".Recipes"))
@@ -144,8 +141,8 @@ public class PMConfiguration
 
 		private void load()
 		{
-			super.enabled = config.getString("Crush.Enable", "true").equalsIgnoreCase("true") ? true : false;
-			breakNaturally = config.getString("Crush.BreakNaturally", "true").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Crush.Enable", "true").equalsIgnoreCase("true");
+			breakNaturally = config.getString("Crush.BreakNaturally", "true").equalsIgnoreCase("true");
 			blackList = new ArrayList<Material>();
 
 			for (final String s : config.getStringList("Crush.Blacklist"))
@@ -191,7 +188,7 @@ public class PMConfiguration
 		
 		private void load()
 		{
-			super.enabled = config.getString("Compact.Enable", "true").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Compact.Enable", "true").equalsIgnoreCase("true");
 			recipes = new ArrayList<ArrayList<Material>>();
 			products = new ArrayList<Material>();
 			
@@ -269,6 +266,7 @@ public class PMConfiguration
 		}
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public class Store extends Base
 	{
 		private Boolean enableStoreBlocks;
@@ -293,21 +291,19 @@ public class PMConfiguration
 			load();
 		}
 
+		@SuppressWarnings("ConstantConditions")
 		private void load()
 		{
-			super.enabled = config.getString("Store.Enable", "true").equalsIgnoreCase("true") ? true : false;
-			enableStoreBlocks = config.getString("Store.EnableStoreBlocks", "true").equalsIgnoreCase("true") ? true : false;
-			enableStoreItems = config.getString("Store.EnableStoreItems", "true").equalsIgnoreCase("true") ? true : false;
-			enableStoreVehicles = config.getString("Store.EnableStoreVehicles", "true").equalsIgnoreCase("true") ? true : false;
-			enableStoreNPCs = config.getString("Store.EnableStoreNPCs", "true").equalsIgnoreCase("true") ? true : false;
-			enableContainerChest = config.getString("Store.EnableContainerChest", "true").equalsIgnoreCase("true") ? true : false;
-			enableContainerFurnace = config.getString("Store.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
-			enableContainerDispenser = config.getString("Store.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Store.Enable", "true").equalsIgnoreCase("true");
+			enableStoreBlocks = config.getString("Store.EnableStoreBlocks", "true").equalsIgnoreCase("true");
+			enableStoreItems = config.getString("Store.EnableStoreItems", "true").equalsIgnoreCase("true");
+			enableStoreVehicles = config.getString("Store.EnableStoreVehicles", "true").equalsIgnoreCase("true");
+			enableStoreNPCs = config.getString("Store.EnableStoreNPCs", "true").equalsIgnoreCase("true");
+			enableContainerChest = config.getString("Store.EnableContainerChest", "true").equalsIgnoreCase("true");
+			enableContainerFurnace = config.getString("Store.EnableContainerFurnace", "true").equalsIgnoreCase("true");
+			enableContainerDispenser = config.getString("Store.EnableContainerDispenser", "true").equalsIgnoreCase("true");
 
-			if (enableStoreItems || enableStoreVehicles ||  enableStoreNPCs)
-				enableStoreEntities = true;
-			else
-				enableStoreEntities = false;
+			enableStoreEntities = enableStoreItems || enableStoreVehicles || enableStoreNPCs;
 			
 			maxItemStoreDistance = config.getDouble("Store.MaxItemStoreDistance", 1.25);
 			if (maxItemStoreDistance < 0.5)
@@ -443,14 +439,14 @@ public class PMConfiguration
 
 		private void load()
 		{
-			super.enabled = config.getString("Retrieve.Enable", "true").equalsIgnoreCase("true") ? true : false;
-			enableRetrieveBlocks = config.getString("Retrieve.EnableRetrieveBlocks", "true").equalsIgnoreCase("true") ? true : false;
-			enableRetrieveItems = config.getString("Retrieve.EnableRetrieveItems", "true").equalsIgnoreCase("true") ? true : false;
-			enableRetrieveVehicles = config.getString("Retrieve.EnableRetrieveVehicles", "true").equalsIgnoreCase("true") ? true : false;
-			enableRetrieveNPCs = config.getString("Retrieve.EnableRetrieveNPCs", "true").equalsIgnoreCase("true") ? true : false;
-			enableContainerChest = config.getString("Retrieve.EnableContainerChest", "true").equalsIgnoreCase("true") ? true : false;
-			enableContainerFurnace = config.getString("Retrieve.EnableContainerFurnace", "true").equalsIgnoreCase("true") ? true : false;
-			enableContainerDispenser = config.getString("Retrieve.EnableContainerDispenser", "true").equalsIgnoreCase("true") ? true : false;
+			super.enabled = config.getString("Retrieve.Enable", "true").equalsIgnoreCase("true");
+			enableRetrieveBlocks = config.getString("Retrieve.EnableRetrieveBlocks", "true").equalsIgnoreCase("true");
+			enableRetrieveItems = config.getString("Retrieve.EnableRetrieveItems", "true").equalsIgnoreCase("true");
+			enableRetrieveVehicles = config.getString("Retrieve.EnableRetrieveVehicles", "true").equalsIgnoreCase("true");
+			enableRetrieveNPCs = config.getString("Retrieve.EnableRetrieveNPCs", "true").equalsIgnoreCase("true");
+			enableContainerChest = config.getString("Retrieve.EnableContainerChest", "true").equalsIgnoreCase("true");
+			enableContainerFurnace = config.getString("Retrieve.EnableContainerFurnace", "true").equalsIgnoreCase("true");
+			enableContainerDispenser = config.getString("Retrieve.EnableContainerDispenser", "true").equalsIgnoreCase("true");
 			blackList = new ArrayList<Material>();
 
 			for (final String s : config.getStringList("Retrieve.Blacklist"))
